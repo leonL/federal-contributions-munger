@@ -1,13 +1,18 @@
 source('lib/munger.R', chdir=TRUE)
 
-dataSet <- data.frame()
-log <- data.frame()
+library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
 
-for(subfolder in k$PartyNicknames) {
-  src <- paste(k$SourcePath, subfolder, sep = '/')
+log <- data.frame()
+dataSet <- data.frame()
+
+for(i in 1:nrow(k$AllParties)) {
+  partyTag <- as.character(k$AllParties[i, 'tag'])
+  partyName <- as.character(k$AllParties[i, 'name'])
+
+  src <- paste(k$SourcePath, partyTag, sep = '/')
   srcFiles <- list.files(src)
 
-  print(paste("Reading all files in", src))
+  print(paste("Reading and munging data for", partyName))
   for(file in srcFiles) {
     print(file)
 
@@ -18,13 +23,12 @@ for(subfolder in k$PartyNicknames) {
       paste(src, file, sep = '/'), header=FALSE, as.is=TRUE, encoding="UTF-8"
     )
 
-    # generate a 'party_name' column and a 'federal_contribution' boolean column
-    # colnames(csv) <- raw_data_column_names
-    # csv <- generate_federal_cols(csv, subfolder)
-    # csv <- adjust_errant_dates(csv, currentYear)
+    csv <- munge$initializeColumns(csv) %>%
+            munge$doneeCols(partyTag, partyName) %>%
+            munge$dateCols(currentYear)
 
     log <- rbind(log,
-      data.frame(party_nickname=subfolder, year=currentYear, nrow=nrow(csv)))
+      data.frame(party_nickname=partyTag, year=currentYear, nrow=nrow(csv)))
 
     dataSet <- rbind(dataSet, csv)
   }
