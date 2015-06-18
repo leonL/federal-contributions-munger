@@ -1,5 +1,8 @@
 source('base.R')
 
+library(stringr, quietly=TRUE, warn.conflicts=FALSE)
+library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
+
 # Constants
 
 if(!exists("k")) { k <- list() }
@@ -15,6 +18,41 @@ k <- within(k, {
   PostalCodeRegex <-
     "^[ABCEGHJKLMNPRSTVXY]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}$"
 })
+
+# Munging functions
+
+if(!exists("munge")) { munge <- list() }
+munge <- within(munge, {
+
+  initializeColumns <- function(dataSet) {
+    colnames(dataSet) <- k$RawDataColNames
+    dataSet <- select(dataSet, -id, -city, -province)
+    return(dataSet)
+  }
+
+  doneeCols <- function(dataSet, partyTag, partyName) {
+    within(dataSet, {
+      party_riding <- str_trim(sub("/.+", "", party_riding))
+
+      # generate 'federal_contribution' column
+      target.federal <- (party_riding == partyName)
+
+      # generate 'party' column
+      party <- partyTag
+    })
+  }
+
+  dateCols <- function(dataSet, currentYear) {
+    dataSet <- within(dataSet, {
+      contrib.date <- as.Date(str_trim(contrib.date), format="%b %d, %Y")
+      contrib.month.day <- strftime(contrib.date, "%m-%d")
+      contrib.year <- currentYear
+    })
+    dataSet <- select(dataSet, -contrib.date)
+    return(dataSet)
+  }
+})
+
 
 # Inline Tests
 
