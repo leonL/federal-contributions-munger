@@ -5,8 +5,8 @@ source('base.R')
 if(!exists("k")) { k <- list() }
 k <- within(k, {
   RawDataColNames <-
-    c("party_riding", "id", "full_name", "contribution_date.ec",
-      "contribution_amount", "city", "province", "postal_code")
+    c("party_riding", "id", "full_name", "contrib.date",
+      "contrib.amount", "city", "province", "postal_code")
   PostalCodeConcordanceColNames <-
     c("postal_code", "contributor.riding_id", "contributor.riding_name",
       "pcode.latitude", "pcode.longitude", "city", "province")
