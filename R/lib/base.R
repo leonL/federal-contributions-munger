@@ -18,7 +18,20 @@ k <- within(k, {
   AllDataFileName <- "all_contributions.csv"
 })
 
-# Inline Teststest
+# Utility functions
+
+if(!exists("util")) { util <- list() }
+util <- within(util, {
+
+  saveCsv <- function(data, filename=k$AllDataFileName) {
+    file <- paste(k$OutputPath, filename, sep = '/')
+    print(paste("Writing", file, "..."))
+    write.csv(data, file=file, row.names=FALSE)
+  }
+
+})
+
+# Inline Tests
 
 if(!exists("test")) { test <- list() }
 test <- within(test, {
