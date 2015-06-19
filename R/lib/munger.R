@@ -51,8 +51,23 @@ munge <- within(munge, {
     dataSet <- select(dataSet, -contrib.date)
     return(dataSet)
   }
-})
 
+  FilterUnviableRows <- function(dataSet) {
+    dataSet <- munge$FilterEstateContributions(dataSet)
+  }
+
+  FilterEstateContributions <- function(dataSet, save=TRUE) {
+    print("Filtering estate contributions...")
+    estateBool <- grepl("estate", dataSet$donor.name, ignore.case = TRUE)
+
+    estateContribs <- filter(dataSet, estateBool)
+    if(save) {util$saveCsv(estateContribs, "estate_contributions.csv")}
+
+    nonEstateContribs <- filter(dataSet, !estateBool)
+    return(nonEstateContribs)
+  }
+
+})
 
 # Inline Tests
 
