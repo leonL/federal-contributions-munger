@@ -23,9 +23,9 @@ for(i in 1:nrow(k$AllParties)) {
       paste(src, file, sep = '/'), header=FALSE, as.is=TRUE, encoding="UTF-8"
     )
 
-    csv <- munge$initializeColumns(csv) %>%
-            munge$doneeCols(partyTag, partyName) %>%
-            munge$dateCols(currentYear)
+    csv <- munge$InitializeColumns(csv) %>%
+            munge$DoneeCols(partyTag, partyName) %>%
+              munge$DateCols(currentYear)
 
     log <- rbind(log,
       data.frame(party_nickname=partyTag, year=currentYear, nrow=nrow(csv)))

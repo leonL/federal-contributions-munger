@@ -8,7 +8,7 @@ library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
 if(!exists("k")) { k <- list() }
 k <- within(k, {
   RawDataColNames <-
-    c("party_riding", "id", "full_name", "contrib.date",
+    c("party_riding", "id", "donor.name", "contrib.date",
       "contrib.amount", "city", "province", "postal_code")
   PostalCodeConcordanceColNames <-
     c("postal_code", "contributor.riding_id", "contributor.riding_name",
@@ -24,25 +24,25 @@ k <- within(k, {
 if(!exists("munge")) { munge <- list() }
 munge <- within(munge, {
 
-  initializeColumns <- function(dataSet) {
+  InitializeColumns <- function(dataSet) {
     colnames(dataSet) <- k$RawDataColNames
     dataSet <- select(dataSet, -id, -city, -province)
     return(dataSet)
   }
 
-  doneeCols <- function(dataSet, partyTag, partyName) {
+  DoneeCols <- function(dataSet, partyTag, partyName) {
     within(dataSet, {
       party_riding <- str_trim(sub("/.+", "", party_riding))
 
       # generate 'federal_contribution' column
-      target.federal <- (party_riding == partyName)
+      donee.riding <- (party_riding != partyName)
 
       # generate 'party' column
       party <- partyTag
     })
   }
 
-  dateCols <- function(dataSet, currentYear) {
+  DateCols <- function(dataSet, currentYear) {
     dataSet <- within(dataSet, {
       contrib.date <- as.Date(str_trim(contrib.date), format="%b %d, %Y")
       contrib.month.day <- strftime(contrib.date, "%m-%d")
