@@ -3,6 +3,8 @@ source('lib/munger.R', chdir=TRUE)
 library(plyr, quietly=TRUE, warn.conflicts=FALSE)
 library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
 
+loggin$SummaryInfo("\n\nMunging algorithim initiated...\n")
+
 rowCounts <- data.frame()
 dataSet <- data.frame()
 
@@ -20,6 +22,9 @@ a_ply(k$AllPartyLabels, 1, function(partyLabels) {
 
 # stop execuition if the compiled data set does not contain all the source csv rows
 validate$AllRowsAccountedFor(nrow(dataSet), rowCounts$n)
+
+loggin$SummaryInfo(
+  "%s records sourced in all", util$FormatNum(nrow(dataSet)))
 
 dataSet <- munge$NameCol(dataSet) %>%
             munge$PostalCodeCol() %>%

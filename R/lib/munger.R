@@ -106,20 +106,20 @@ util <- within(util, {
   }
 
   ReadAndFormatSubset <- function(partyIds, year) {
-    partyTag <- partyIds[['tag']]
-    partyName <- partyIds[['name']]
-    filePrefix <- partyIds[['filePrefix']]
+    partyTag <- as.character(partyIds[['tag']])
+    partyName <- as.character(partyIds[['name']])
+    filePrefix <- as.character(partyIds[['filePrefix']])
 
-    print(paste("Reading and formating donations to", partyName, "for", year))
-
+    flog.info("Reading and formating donations to %s %s", partyName, year)
     fileName <- paste(filePrefix, year, 'csv', sep = '.')
     src <- paste(k$SourcePath, partyTag, fileName, sep = '/')
+    subset <- read.csv(src, header=FALSE, as.is=TRUE, encoding="UTF-8")
+
+    loggin$SummaryInfo(
+      "%s records sourced from %s", util$FormatNum(nrow(subset)), fileName)
 
 
-    subset <- read.csv(
-      src, header=FALSE, as.is=TRUE, encoding="UTF-8"
-    )
-
+    # formatting....
     subset <- munge$InitializeColumns(subset) %>%
                 munge$DoneeCols(partyTag, partyName) %>%
                   munge$DateCols(year)

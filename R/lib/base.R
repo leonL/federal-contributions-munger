@@ -38,6 +38,10 @@ util <- within(util, {
     return(csv)
   }
 
+  FormatNum <- function(n) {
+    format(n, big.mark = ',')
+  }
+
 })
 
 # Inline validation
@@ -53,3 +57,21 @@ validate <- within(validate, {
     }
   }
 })
+
+# Logging...
+
+library(futile.logger, quietly=TRUE, warn.conflicts=FALSE)
+
+if(!exists("loggin")) { loggin <- list() }
+loggin <- within(loggin, {
+
+  summaryFile <- paste(k$OutputPath, "data_summary.log", sep = '/')
+
+  SummaryInfo <- function(msg, ...) {
+    flog.info(msg, ..., name="data.summary")
+    return(NULL)
+  }
+
+})
+
+flog.appender(appender.file(loggin$summaryFile), name="data.summary")
