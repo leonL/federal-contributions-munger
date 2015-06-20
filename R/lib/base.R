@@ -31,10 +31,10 @@ util <- within(util, {
 
 })
 
-# Inline Tests
+# Inline validation
 
-if(!exists("test")) { test <- list() }
-test <- within(test, {
+if(!exists("validate")) { validate <- list() }
+validate <- within(validate, {
 
   Base <- function(clause, errorMsg) {
     if(clause) {

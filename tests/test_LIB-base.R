@@ -1,5 +1,5 @@
 source('../R/lib/base.R', chdir=TRUE)
 
-test_that("An error is thrown when an inline test fails", {
-  expect_error(test$Base(FALSE, "error message"), "error message")
+test_that("An error is thrown when an inline validation fails", {
+  expect_error(validate$Base(FALSE, "error message"), "error message")
 })

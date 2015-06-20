@@ -69,19 +69,21 @@ munge <- within(munge, {
 
 })
 
-# Inline Tests
+# Inline validation
 
-if(!exists("test")) { test <- list() }
-test <- within(test, {
+if(!exists("validate")) { validate <- list() }
+validate <- within(validate, {
 
-  ValidateYear <- function(year) {
-    test$Base(year %in% k$AllContribYears,
+  Year <- function(year) {
+    validate$Base(year %in% k$AllContribYears,
       paste("Invalid year:", year)
     )
   }
 
-  AllRowsAccountedFor <- function(subsetN, dataSetN) {
-    test$Base(subsetN == dataSetN, errorMsgs$RowCount(subsetN, dataSetN))
+  AllRowsAccountedFor <- function(setRowCount, sourceRowCounts) {
+    subsetRowCount <- sum(sourceRowCounts)
+    validate$Base(setRowCount == subsetRowCount,
+      errorMsgs$RowCount(subsetRowCount, setRowCount))
   }
 })
 
