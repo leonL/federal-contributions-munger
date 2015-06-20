@@ -23,10 +23,17 @@ k <- within(k, {
 if(!exists("util")) { util <- list() }
 util <- within(util, {
 
-  saveCsv <- function(data, filename=k$AllDataFileName) {
+  SaveCSV <- function(data, filename=k$AllDataFileName) {
     file <- paste(k$OutputPath, filename, sep = '/')
     print(paste("Writing", file, "..."))
     write.csv(data, file=file, row.names=FALSE)
+  }
+
+  ReadConcordanceCSV <- function(filename) {
+    file <- paste(k$SourcePath, "concordances", filename, sep = '/')
+    print(paste("Reading", file, "..."))
+    csv <- read.csv(file, as.is=TRUE, encoding="UTF-8")
+    return(csv)
   }
 
 })

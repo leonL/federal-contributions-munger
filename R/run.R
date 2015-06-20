@@ -2,7 +2,7 @@ source('lib/munger.R', chdir=TRUE)
 
 library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
 
-log <- data.frame()
+rowCounts <- data.frame()
 dataSet <- data.frame()
 
 for(i in 1:nrow(k$AllParties)) {
@@ -17,7 +17,7 @@ for(i in 1:nrow(k$AllParties)) {
     print(file)
 
     currentYear <- strsplit(file, ".", fixed=TRUE)[[1]][2]
-    test$ValidateYear(currentYear)
+    validate$Year(currentYear)
 
     csv <- read.csv(
       paste(src, file, sep = '/'), header=FALSE, as.is=TRUE, encoding="UTF-8"
@@ -27,11 +27,19 @@ for(i in 1:nrow(k$AllParties)) {
             munge$DoneeCols(partyTag, partyName) %>%
               munge$DateCols(currentYear)
 
-    log <- rbind(log,
+    rowCounts <- rbind(rowCounts,
       data.frame(party_nickname=partyTag, year=currentYear, nrow=nrow(csv)))
 
     dataSet <- rbind(dataSet, csv)
   }
 }
 
-test$AllRowsAccountedFor(subsetN = sum(log$n), dataSetN = nrow(dataSet))
+# stop execuition if the compiled data set does not contain all the source csv rows
+validate$AllRowsAccountedFor(nrow(dataSet), rowCounts$n)
+
+dataSet <- munge$NameCol(dataSet) %>%
+            munge$PostalCodeCol() %>%
+              munge$FilterUnviableRows() %>%
+                merge(util$GetRidingConcordSet(), all.x=TRUE)
+
+# validate$AllRidingsNormalized()

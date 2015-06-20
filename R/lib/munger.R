@@ -19,6 +19,29 @@ k <- within(k, {
     "^[ABCEGHJKLMNPRSTVXY]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}$"
 })
 
+# Utility functions
+
+if(!exists("util")) { util <- list() }
+util <- within(util, {
+
+  TitleCase <- function(str) {
+    gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", str, perl=TRUE)
+  }
+
+  GetRidingConcordSet <- function() {
+    set <- util$ReadConcordanceCSV("patry_to_official_riding_name_concordance.csv")
+    colnames(set) <- k$RidingConcordanceColNames
+    return(set)
+  }
+
+  GetPostalConcordSet <- function() {
+    set <- util$ReadConcordanceCSV("postal_code_riding_geo_concordance.csv")
+    colnames(set) <- k$PostalCodeConcordanceColNames
+    return(set)
+  }
+
+})
+
 # Munging functions
 
 if(!exists("munge")) { munge <- list() }
@@ -35,7 +58,7 @@ munge <- within(munge, {
       party_riding <- str_trim(sub("/.+", "", party_riding))
 
       # generate 'federal_contribution' column
-      donee.riding <- (party_riding != partyName)
+      donee.riding_level <- (party_riding != partyName)
 
       # generate 'party' column
       party <- partyTag
@@ -52,16 +75,31 @@ munge <- within(munge, {
     return(dataSet)
   }
 
+  NameCol <- function(dataSet) {
+    within(dataSet, {
+      donor.name <- str_trim(donor.name) %>% tolower() %>% util$TitleCase()
+      donor.name[donor.name == ""] <- NA
+    })
+  }
+
+  PostalCodeCol <- function(dataSet) {
+    within(dataSet, {
+      # remove hyphens and whitespace
+      postal_code <- toupper(postal_code) %>% gsub("(-|\\s)","", .)
+      postal_code[postal_code == ""] <- NA
+    })
+  }
+
   FilterUnviableRows <- function(dataSet) {
     dataSet <- munge$FilterEstateContributions(dataSet)
   }
 
-  FilterEstateContributions <- function(dataSet, save=TRUE) {
+  FilterEstateContributions <- function(dataSet, saveCSV=TRUE) {
     print("Filtering estate contributions...")
     estateBool <- grepl("estate", dataSet$donor.name, ignore.case = TRUE)
 
     estateContribs <- filter(dataSet, estateBool)
-    if(save) {util$saveCsv(estateContribs, "estate_contributions.csv")}
+    if(saveCSV) {util$SaveCSV(estateContribs, "estate_contributions.csv")}
 
     nonEstateContribs <- filter(dataSet, !estateBool)
     return(nonEstateContribs)
