@@ -19,29 +19,6 @@ k <- within(k, {
     "^[ABCEGHJKLMNPRSTVXY]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}$"
 })
 
-# Utility functions
-
-if(!exists("util")) { util <- list() }
-util <- within(util, {
-
-  TitleCase <- function(str) {
-    gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", str, perl=TRUE)
-  }
-
-  GetRidingConcordSet <- function() {
-    set <- util$ReadConcordanceCSV("patry_to_official_riding_name_concordance.csv")
-    colnames(set) <- k$RidingConcordanceColNames
-    return(set)
-  }
-
-  GetPostalConcordSet <- function() {
-    set <- util$ReadConcordanceCSV("postal_code_riding_geo_concordance.csv")
-    colnames(set) <- k$PostalCodeConcordanceColNames
-    return(set)
-  }
-
-})
-
 # Munging functions
 
 if(!exists("munge")) { munge <- list() }
@@ -107,16 +84,55 @@ munge <- within(munge, {
 
 })
 
+# Utility functions
+
+if(!exists("util")) { util <- list() }
+util <- within(util, {
+
+  TitleCase <- function(str) {
+    gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", str, perl=TRUE)
+  }
+
+  GetRidingConcordSet <- function() {
+    set <- util$ReadConcordanceCSV("patry_to_official_riding_name_concordance.csv")
+    colnames(set) <- k$RidingConcordanceColNames
+    return(set)
+  }
+
+  GetPostalConcordSet <- function() {
+    set <- util$ReadConcordanceCSV("postal_code_riding_geo_concordance.csv")
+    colnames(set) <- k$PostalCodeConcordanceColNames
+    return(set)
+  }
+
+  ReadAndFormatSubset <- function(partyIds, year) {
+    partyTag <- partyIds[['tag']]
+    partyName <- partyIds[['name']]
+    filePrefix <- partyIds[['filePrefix']]
+
+    print(paste("Reading and formating donations to", partyName, "for", year))
+
+    fileName <- paste(filePrefix, year, 'csv', sep = '.')
+    src <- paste(k$SourcePath, partyTag, fileName, sep = '/')
+
+
+    subset <- read.csv(
+      src, header=FALSE, as.is=TRUE, encoding="UTF-8"
+    )
+
+    subset <- munge$InitializeColumns(subset) %>%
+                munge$DoneeCols(partyTag, partyName) %>%
+                  munge$DateCols(year)
+
+    return(subset)
+  }
+
+})
+
 # Inline validation
 
 if(!exists("validate")) { validate <- list() }
 validate <- within(validate, {
-
-  Year <- function(year) {
-    validate$Base(year %in% k$AllContribYears,
-      paste("Invalid year:", year)
-    )
-  }
 
   AllRowsAccountedFor <- function(setRowCount, sourceRowCounts) {
     subsetRowCount <- sum(sourceRowCounts)
