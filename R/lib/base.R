@@ -2,10 +2,12 @@
 
 if(!exists("k")) { k <- list() }
 k <- within(k, {
+
   PartyTags <- c('Bloc', 'Conservative', 'Green', 'Liberal', 'NDP')
   PartyNames <- c("Bloc Québécois", "Conservative Party of Canada",
       "Green Party of Canada", "Liberal Party of Canada", "New Democratic Party")
-  AllParties <- data.frame(name=PartyNames, tag=PartyTags)
+  FilePrefix <- c('Bloc Québécois', 'Conservative Party', 'Green Party', 'Liberal Party', 'New Democratic Party')
+  AllPartyLabels <- data.frame(name=PartyNames, tag=PartyTags, filePrefix=FilePrefix)
 
   AllContribYears <- as.character(c(2004:2015))
 
