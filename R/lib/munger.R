@@ -24,7 +24,7 @@ k <- within(k, {
 if(!exists("munge")) { munge <- list() }
 munge <- within(munge, {
 
-  InitializeColumns <- function(dataSet) {
+  InitializeRawDataCols <- function(dataSet) {
     colnames(dataSet) <- k$RawDataColNames
     dataSet <- select(dataSet, -id, -city, -province)
     return(dataSet)
@@ -52,33 +52,47 @@ munge <- within(munge, {
     return(dataSet)
   }
 
-  NameCol <- function(dataSet) {
-    within(dataSet, {
-      donor.name <- str_trim(donor.name) %>% tolower() %>% util$TitleCase()
-      donor.name[donor.name == ""] <- NA
-    })
+  DonorNames <- function(dNames) {
+    dNames <- str_trim(dNames) %>% tolower() %>% util$TitleCase()
+    dNames[dNames == ""] <- NA
+    return(dNames)
   }
 
-  PostalCodeCol <- function(dataSet) {
-    within(dataSet, {
-      # remove hyphens and whitespace
-      postal_code <- toupper(postal_code) %>% gsub("(-|\\s)","", .)
-      postal_code[postal_code == ""] <- NA
-    })
+  PostalCodes <- function(pCodes) {
+    # remove hyphens and whitespace
+    toupper(pCodes) %>% gsub("(-|\\s)","", .)
   }
 
-  FilterUnviableRows <- function(dataSet) {
-    dataSet <- munge$FilterEstateContributions(dataSet)
+  ContribAmounts <- function(amounts) {
+    # express in dollars (raw values are expressed in cents)
+    amounts / 100
   }
 
-  FilterEstateContributions <- function(dataSet, saveCSV=TRUE) {
-    print("Filtering estate contributions...")
-    estateBool <- grepl("estate", dataSet$donor.name, ignore.case = TRUE)
+  FilterOutUnusableRows <- function(dataSet) {
+    dataSet <- munge$FilterOutInvalidPostalCodes(dataSet) %>%
+                munge$FilterOutEstateContributions()
+    return(dataSet)
+  }
 
-    estateContribs <- filter(dataSet, estateBool)
-    if(saveCSV) {util$SaveCSV(estateContribs, "estate_contributions.csv")}
+  FilterOutInvalidPostalCodes <- function(dataSet, save.removedRows=TRUE) {
+    flog.info("Filtering out invalid postal codes...")
+    validCodes <- grepl(k$PostalCodeRegex, dataSet$postal_code)
 
-    nonEstateContribs <- filter(dataSet, !estateBool)
+    rowsWithInvalidPostal <- filter(dataSet, !validCodes)
+    if(save.removedRows) {util$SaveCSV(rowsWithInvalidPostal, "unused_rows.invalid_pcodes.csv")}
+
+    rowsWithValidPostal <- filter(dataSet, validCodes)
+    return(rowsWithValidPostal)
+  }
+
+  FilterOutEstateContributions <- function(dataSet, save.removedRows=TRUE) {
+    flog.info("Filtering out estate contributions...")
+    isEstate <- grepl("estate", dataSet$donor.name, ignore.case = TRUE)
+
+    estateContribs <- filter(dataSet, isEstate)
+    if(save.removedRows) {util$SaveCSV(estateContribs, "unused_rows.estate_contribs.csv")}
+
+    nonEstateContribs <- filter(dataSet, !isEstate)
     return(nonEstateContribs)
   }
 
@@ -105,7 +119,7 @@ util <- within(util, {
     return(set)
   }
 
-  ReadAndFormatSubset <- function(partyIds, year) {
+  ReadAndFormatPartyYearSubset <- function(partyIds, year) {
     partyTag <- as.character(partyIds[['tag']])
     partyName <- as.character(partyIds[['name']])
     filePrefix <- as.character(partyIds[['filePrefix']])
@@ -120,7 +134,7 @@ util <- within(util, {
 
 
     # formatting....
-    subset <- munge$InitializeColumns(subset) %>%
+    subset <- munge$InitializeRawDataCols(subset) %>%
                 munge$DoneeCols(partyTag, partyName) %>%
                   munge$DateCols(year)
 

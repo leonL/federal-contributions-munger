@@ -8,10 +8,11 @@ loggin$SummaryInfo("\n\nMunging algorithim initiated...\n")
 rowCounts <- data.frame()
 dataSet <- data.frame()
 
+# aggregate all source data into a single data set
 a_ply(k$AllPartyLabels, 1, function(partyLabels) {
   for(year in k$AllContribYears) {
 
-    subset <- util$ReadAndFormatSubset(partyLabels, year)
+    subset <- util$ReadAndFormatPartyYearSubset(partyLabels, year)
 
     rowCounts <<- rbind(rowCounts,
       data.frame(party_nickname=partyLabels['tag'], year=year, nrow=nrow(subset)))
@@ -26,9 +27,15 @@ validate$AllRowsAccountedFor(nrow(dataSet), rowCounts$n)
 loggin$SummaryInfo(
   "%s records sourced in all", util$FormatNum(nrow(dataSet)))
 
-dataSet <- munge$NameCol(dataSet) %>%
-            munge$PostalCodeCol() %>%
-              munge$FilterUnviableRows() %>%
-                merge(util$GetRidingConcordSet(), all.x=TRUE)
+# cleanup and format values
+dataSet <- within(dataSet, {
+  donor.name <- munge$DonorNames(donor.name)
+  postal_code <- munge$PostalCodes(postal_code)
+  contrib.amount <- munge$ContribAmount(contrib.amount)
+})
 
-# validate$AllRidingsNormalized()
+# filter out unusable rows from the data set and merge in normalized riding/geo data
+dataSet <- munge$FilterOutUnusableRows(dataSet) %>%
+            merge(util$GetRidingConcordSet(), all.x=TRUE)
+
+# validate$NoneNA()
