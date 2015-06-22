@@ -56,6 +56,10 @@ validate <- within(validate, {
       stop(errorMsg)
     }
   }
+
+  IsNotNA <- function(vec, errogMsg) {
+    Base(!any(is.na(vec)), errogMsg)
+  }
 })
 
 # Logging...

@@ -86,3 +86,10 @@ test_that("validate$AllRowsAccountedFor...", {
   expect_true(validate$AllRowsAccountedFor(setCount, validSubsetCounts))
   expect_error(validate$AllRowsAccountedFor(setCount, invalidSubsetCounts))
 })
+
+test_that("validate$AllRidingsNormalized...", {
+  ids <- c(1,2,3)
+  expect_true(validate$AllRidingsNormalized(ids))
+  ids[4] <- NA
+  expect_error(validate$AllRidingsNormalized(ids))
+})

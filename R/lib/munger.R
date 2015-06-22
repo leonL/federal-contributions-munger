@@ -74,6 +74,10 @@ munge <- within(munge, {
     return(dataSet)
   }
 
+  # FilterOutInvalidAmounts <- function(dataSet, save.removeRows) {
+
+  # }
+
   FilterOutInvalidPostalCodes <- function(dataSet, save.removedRows=TRUE) {
     flog.info("Filtering out invalid postal codes...")
     validCodes <- grepl(k$PostalCodeRegex, dataSet$postal_code)
@@ -150,8 +154,13 @@ validate <- within(validate, {
 
   AllRowsAccountedFor <- function(setRowCount, sourceRowCounts) {
     subsetRowCount <- sum(sourceRowCounts)
-    validate$Base(setRowCount == subsetRowCount,
+    Base(setRowCount == subsetRowCount,
       errorMsgs$RowCount(subsetRowCount, setRowCount))
+  }
+
+  AllRidingsNormalized <- function(ridingIds) {
+    nRowsNotNormalized <- length(which(is.na(ridingIds)))
+    IsNotNA(ridingIds, errorMsgs$UnknownRidings(nRowsNotNormalized))
   }
 })
 
@@ -159,11 +168,18 @@ validate <- within(validate, {
 
 if(!exists("errorMsgs")) { errorMsgs <- list() }
 errorMsgs <- within(errorMsgs, {
+
   RowCount <- function(subsetN, dataSetN) {
     paste("There's a discrepancy between the data set and subset row counts.\n",
           "All the subset rows summed:", subsetN, "\n",
           "Data set row count:", dataSetN, "\n",
           "Difference:", abs(subsetN - dataSetN)
+    )
+  }
+
+  UnknownRidings <- function(nRowsNotNormalized) {
+    paste("There was a problem normalizing the target riding names.\n",
+          nRowsNotNormalized, "were not normalized."
     )
   }
 })

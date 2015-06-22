@@ -34,8 +34,11 @@ dataSet <- within(dataSet, {
   contrib.amount <- munge$ContribAmount(contrib.amount)
 })
 
-# filter out unusable rows from the data set and merge in normalized riding/geo data
-dataSet <- munge$FilterOutUnusableRows(dataSet) %>%
-            merge(util$GetRidingConcordSet(), all.x=TRUE)
+# filter out unusable rows from the data set
+dataSet <- munge$FilterOutUnusableRows(dataSet)
 
-# validate$NoneNA()
+# merge normalized riding names into the data set
+dataSet <- merge(dataSet, util$GetRidingConcordSet(), all.x=TRUE)
+ridingIds <- filter(dataSet, donee.riding_level) %>% select(target.riding_id)
+validate$AllRidingsNormalized(ridingIds)
+
