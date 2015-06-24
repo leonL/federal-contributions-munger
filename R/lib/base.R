@@ -53,7 +53,7 @@ validate <- within(validate, {
     if(clause) {
       return(TRUE)
     } else {
-      SummaryInlineValidationError(errorMsg)
+      logg$SummaryInlineValidationError(errorMsg)
       stop(errorMsg)
     }
   }
