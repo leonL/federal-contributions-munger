@@ -107,6 +107,32 @@ munge <- within(munge, {
 if(!exists("util")) { util <- list() }
 util <- within(util, {
 
+  AggreateSrcData <- function() {
+
+    rowCounts <- data.frame()
+    aggregateSet <- data.frame()
+
+    a_ply(k$AllPartyLabels, 1, function(partyLabels) {
+      for(year in k$AllContribYears) {
+
+        subset <- util$ReadAndFormatPartyYearSubset(partyLabels, year)
+
+        rowCounts <<- rbind(rowCounts,
+          data.frame(party_nickname=partyLabels['tag'], year=year, nrow=nrow(subset)))
+
+        aggregateSet <<- rbind(aggregateSet, subset)
+      }
+    })
+
+    # stop execuition if the compiled data set does not contain all the source csv rows
+    validate$AllRowsAccountedFor(nrow(aggregateSet), rowCounts$n)
+
+    logg$SummaryInfo(
+      "%s records sourced in all", util$FormatNum(nrow(aggregateSet)))
+
+    return(aggregateSet)
+  }
+
   TitleCase <- function(str) {
     gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", str, perl=TRUE)
   }
