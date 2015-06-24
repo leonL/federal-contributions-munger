@@ -3,10 +3,10 @@ source('lib/munger.R', chdir=TRUE)
 library(plyr, quietly=TRUE, warn.conflicts=FALSE)
 library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
 
-loggin$SummaryInfo("\n\nMunging algorithim initiated...\n")
 
 rowCounts <- data.frame()
 dataSet <- data.frame()
+logg$SummaryInfo("\n\nMunging algorithim initiated...\n")
 
 # aggregate all source data into a single data set
 a_ply(k$AllPartyLabels, 1, function(partyLabels) {

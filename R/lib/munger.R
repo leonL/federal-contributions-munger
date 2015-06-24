@@ -133,7 +133,7 @@ util <- within(util, {
     src <- paste(k$SourcePath, partyTag, fileName, sep = '/')
     subset <- read.csv(src, header=FALSE, as.is=TRUE, encoding="UTF-8")
 
-    loggin$SummaryInfo(
+    logg$SummaryInfo(
       "%s records sourced from %s", util$FormatNum(nrow(subset)), fileName)
 
 

@@ -53,6 +53,7 @@ validate <- within(validate, {
     if(clause) {
       return(TRUE)
     } else {
+      SummaryInlineValidationError(errorMsg)
       stop(errorMsg)
     }
   }
@@ -66,8 +67,8 @@ validate <- within(validate, {
 
 library(futile.logger, quietly=TRUE, warn.conflicts=FALSE)
 
-if(!exists("loggin")) { loggin <- list() }
-loggin <- within(loggin, {
+if(!exists("logg")) { logg <- list() }
+logg <- within(logg, {
 
   summaryFile <- paste(k$OutputPath, "data_summary.log", sep = '/')
 
@@ -76,6 +77,10 @@ loggin <- within(loggin, {
     return(NULL)
   }
 
+  SummaryInlineValidationError <- function(msg, ...) {
+    flog.fatal(msg, ..., name="data.summary")
+    return(NULL)
+  }
 })
 
-flog.appender(appender.file(loggin$summaryFile), name="data.summary")
+flog.appender(appender.file(logg$summaryFile), name="data.summary")
