@@ -10,7 +10,7 @@ mock <- within(list(), {
     party_riding=c("Conservative Party of Canada / March 2014 / Quarterly",
       "Conservative Party of Canada", "York--Simcoe Conservative Association"),
     contrib.date=c("Jun 05, 2004", "Aug 01 2010", ""),
-    postal_code=c("M6P 1N9", "L4C-9M2", "BADDPC"),
+    postal_code=c("S0S 0S0", "L4C-9M2", "BADDPC"),
     donor.name=c(" estate of edward van halen", "Mr. and Estate of Mrs. Roth",
       donorName),
     contrib.amount=c(15050, 120000, 0)
@@ -46,7 +46,7 @@ test_that("munge$DonorNames...", {
 
 test_that("munge$PostalCodes...", {
   codes <- munge$PostalCodes(mock$dataSet$postal_code)
-  expect_equal(codes[1], "M6P1N9")
+  expect_equal(codes[1], "S0S0S0")
   expect_equal(codes[2], "L4C9M2")
 })
 
@@ -66,7 +66,14 @@ test_that("munge$FilterOutInvalidPostalCodes...", {
   mock$dataSet$postal_code <- munge$PostalCodes(mock$dataSet$postal_code)
   dataSet <- munge$FilterOutInvalidPostalCodes(mock$dataSet, save.removedRows=FALSE)
   expect_equal(nrow(dataSet), 2)
-  expect_equal(as.character(dataSet[1, 'postal_code']), "M6P1N9")
+  expect_equal(as.character(dataSet[1, 'postal_code']), "S0S0S0")
+})
+
+test_that("munge$FilterOutFakePostalCodes...", {
+  mock$dataSet$postal_code <- munge$PostalCodes(mock$dataSet$postal_code)
+  dataSet <- munge$FilterOutFakePostalCodes(mock$dataSet, save.removedRows=FALSE)
+  expect_equal(nrow(dataSet), 2)
+  expect_false("S0S0S0" %in% dataSet$postal_code)
 })
 
 context("Utility functions")

@@ -73,14 +73,11 @@ munge <- within(munge, {
   }
 
   FilterOutUnusableRows <- function(dataSet) {
-    dataSet <- munge$FilterOutInvalidPostalCodes(dataSet) %>%
-                munge$FilterOutEstateContributions()
+    dataSet <- FilterOutInvalidPostalCodes(dataSet) %>%
+                FilterOutFakePostalCodes() %>%
+                  FilterOutEstateContributions()
     return(dataSet)
   }
-
-  # FilterOutInvalidAmounts <- function(dataSet, save.removeRows) {
-
-  # }
 
   FilterOutInvalidPostalCodes <- function(dataSet, save.removedRows=TRUE) {
     flog.info("Filtering out invalid postal codes...")
@@ -91,6 +88,18 @@ munge <- within(munge, {
 
     rowsWithValidPostal <- filter(dataSet, validCodes)
     return(rowsWithValidPostal)
+  }
+
+  FilterOutFakePostalCodes <- function(dataSet, save.removedRows=TRUE) {
+    flog.info("Filtering out fake postal codes...")
+    fakeCodes <- util$GetFakePostalVector()
+    isFake <- dataSet$postal_code %in% fakeCodes
+
+    rowsWithFakePostal <- filter(dataSet, isFake)
+    if(save.removedRows) {util$SaveCSV(rowsWithFakePostal, "unused_rows.fake_pcodes.csv")}
+
+    rowsWithRealPostalCodes <- filter(dataSet, !(isFake))
+    return(rowsWithRealPostalCodes)
   }
 
   FilterOutEstateContributions <- function(dataSet, save.removedRows=TRUE) {
@@ -172,6 +181,11 @@ util <- within(util, {
     set <- util$ReadPostalCodeSrcCSV("postal_code_riding_geo_concordance.csv")
     colnames(set) <- k$PostalCodeConcordanceColNames
     return(set)
+  }
+
+  GetFakePostalVector <- function() {
+    set <- util$ReadPostalCodeSrcCSV("fake_postal_codes.csv")
+    return(set$postal_code)
   }
 
 })
