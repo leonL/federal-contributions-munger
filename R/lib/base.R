@@ -4,10 +4,14 @@ if(!exists("k")) { k <- list() }
 k <- within(k, {
 
   PartyTags <- c('Bloc', 'Conservative', 'Green', 'Liberal', 'NDP')
+
   PartyNames <- c("Bloc Québécois", "Conservative Party of Canada",
       "Green Party of Canada", "Liberal Party of Canada", "New Democratic Party")
-  FilePrefix <- c('Bloc Québécois', 'Conservative Party', 'Green Party', 'Liberal Party', 'New Democratic Party')
-  AllPartyLabels <- data.frame(name=PartyNames, tag=PartyTags, filePrefix=FilePrefix)
+
+  FileNamePrefix <- c('Bloc Québécois', 'Conservative Party', 'Green Party',
+      'Liberal Party', 'New Democratic Party')
+
+  PartyLabels <- data.frame(name=PartyNames, filePrefix=FileNamePrefix, row.names=PartyTags, stringsAsFactors=FALSE)
 
   AllContribYears <- as.character(c(2004:2015))
 
@@ -15,6 +19,8 @@ k <- within(k, {
     c("AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT", NA)
 
   SourcePath <- "../data/source"
+  ContribsSrcPath <- paste(SourcePath, "contributions", sep='/')
+
   OutputPath <- "../data/output"
 
   AllDataFileName <- "all_contributions.csv"
@@ -25,21 +31,41 @@ k <- within(k, {
 if(!exists("util")) { util <- list() }
 util <- within(util, {
 
+  ReadSrcCSV <- function(filename, subfolder) {
+    file <- paste(k$SourcePath, subfolder, filename, sep = '/')
+    print(paste("Reading", file, "..."))
+    csv <- read.csv(file, as.is=TRUE, encoding="UTF-8")
+    return(csv)
+  }
+
+  ReadPostalCodeSrcCSV <- function(filename) {
+    ReadSrcCSV(filename, "postal_codes")
+  }
+
+  ReadRidingSrcCSV <- function(filename) {
+    ReadSrcCSV(filename, "ridings")
+  }
+
   SaveCSV <- function(data, filename=k$AllDataFileName) {
     file <- paste(k$OutputPath, filename, sep = '/')
     print(paste("Writing", file, "..."))
     write.csv(data, file=file, row.names=FALSE)
   }
 
-  ReadConcordanceCSV <- function(filename) {
-    file <- paste(k$SourcePath, "concordances", filename, sep = '/')
-    print(paste("Reading", file, "..."))
-    csv <- read.csv(file, as.is=TRUE, encoding="UTF-8")
-    return(csv)
-  }
-
   FormatNum <- function(n) {
     format(n, big.mark = ',')
+  }
+
+  GetOfficialPartyName <- function(partyTag) {
+    k$PartyLabels[partyTag, 'name']
+  }
+
+  GetContributionsFileNamePrefix <- function(partyTag) {
+    k$PartyLabels[partyTag, 'filePrefix']
+  }
+
+  TitleCase <- function(str) {
+    gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", str, perl=TRUE)
   }
 
 })

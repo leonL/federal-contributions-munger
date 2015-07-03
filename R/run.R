@@ -3,10 +3,10 @@ source('lib/munger.R', chdir=TRUE)
 library(plyr, quietly=TRUE, warn.conflicts=FALSE)
 library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
 
-logg$SummaryInfo("\n\nMunging algorithim initiated...\n")
+logg$SummaryInfo("\n\nMunging initiated...\n")
 
 # aggregate all source data into a single data set
-dataSet <- util$AggreateSrcData()
+dataSet <- util$InitContribsDataSet()
 
 # cleanup and format values
 dataSet <- within(dataSet, {

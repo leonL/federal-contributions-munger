@@ -7,14 +7,18 @@ library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
 
 if(!exists("k")) { k <- list() }
 k <- within(k, {
-  RawDataColNames <-
+
+  RawContributionsDataColNames <-
     c("party_riding", "id", "donor.name", "contrib.date",
       "contrib.amount", "city", "province", "postal_code")
+
   PostalCodeConcordanceColNames <-
     c("postal_code", "contributor.riding_id", "contributor.riding_name",
       "pcode.latitude", "pcode.longitude", "city", "province")
+
   RidingConcordanceColNames <-
     c("party_riding", "target.riding_name", "target.riding_id")
+
   PostalCodeRegex <-
     "^[ABCEGHJKLMNPRSTVXY]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}$"
 })
@@ -24,8 +28,8 @@ k <- within(k, {
 if(!exists("munge")) { munge <- list() }
 munge <- within(munge, {
 
-  InitializeRawDataCols <- function(dataSet) {
-    colnames(dataSet) <- k$RawDataColNames
+  InitializeRawContribsDataCols <- function(dataSet) {
+    colnames(dataSet) <- k$RawContributionsDataColNames
     dataSet <- select(dataSet, -id, -city, -province)
     return(dataSet)
   }
@@ -107,22 +111,25 @@ munge <- within(munge, {
 if(!exists("util")) { util <- list() }
 util <- within(util, {
 
-  AggreateSrcData <- function() {
+  InitContribsDataSet <- function() {
 
     rowCounts <- data.frame()
     aggregateSet <- data.frame()
 
-    a_ply(k$AllPartyLabels, 1, function(partyLabels) {
+    for(partyTag in k$PartyTags) {
       for(year in k$AllContribYears) {
 
-        subset <- util$ReadAndFormatPartyYearSubset(partyLabels, year)
+        flog.info("Initializing contributions made to the %s in %s.", partyTag, year)
 
-        rowCounts <<- rbind(rowCounts,
-          data.frame(party_nickname=partyLabels['tag'], year=year, nrow=nrow(subset)))
+        subset <- util$GetContribsSubset(partyTag, year) %>%
+                    FormatContributionsSubset(partyTag, year)
 
-        aggregateSet <<- rbind(aggregateSet, subset)
+        rowCounts <- rbind(rowCounts,
+          data.frame(party_nickname=partyTag, year=year, nrow=nrow(subset)))
+
+        aggregateSet <- rbind(aggregateSet, subset)
       }
-    })
+    }
 
     # stop execuition if the compiled data set does not contain all the source csv rows
     validate$AllRowsAccountedFor(nrow(aggregateSet), rowCounts$n)
@@ -133,42 +140,38 @@ util <- within(util, {
     return(aggregateSet)
   }
 
-  TitleCase <- function(str) {
-    gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", str, perl=TRUE)
+  FormatContributionsSubset <- function(subset, partyTag, year) {
+    partyName <- GetOfficialPartyName(partyTag)
+    subset <- munge$InitializeRawContribsDataCols(subset) %>%
+                munge$DoneeCols(partyTag, partyName) %>%
+                  munge$DateCols(year)
+    return(subset)
+  }
+
+  GetContribsSubset <- function(partyTag, year) {
+    fileNamePrefix <- GetContributionsFileNamePrefix(partyTag)
+
+    fileName <- paste(fileNamePrefix, year, 'csv', sep = '.')
+    src <- paste(k$ContribsSrcPath, partyTag, fileName, sep = '/')
+
+    subset <- read.csv(src, header=FALSE, as.is=TRUE, encoding="UTF-8")
+
+    logg$SummaryInfo(
+      "Read %s records from %s", util$FormatNum(nrow(subset)), fileName)
+
+    return(subset)
   }
 
   GetRidingConcordSet <- function() {
-    set <- util$ReadConcordanceCSV("patry_to_official_riding_name_concordance.csv")
+    set <- util$ReadRidingSrcCSV("patry_to_official_riding_name_concordance.csv")
     colnames(set) <- k$RidingConcordanceColNames
     return(set)
   }
 
   GetPostalConcordSet <- function() {
-    set <- util$ReadConcordanceCSV("postal_code_riding_geo_concordance.csv")
+    set <- util$ReadPostalCodeSrcCSV("postal_code_riding_geo_concordance.csv")
     colnames(set) <- k$PostalCodeConcordanceColNames
     return(set)
-  }
-
-  ReadAndFormatPartyYearSubset <- function(partyIds, year) {
-    partyTag <- as.character(partyIds[['tag']])
-    partyName <- as.character(partyIds[['name']])
-    filePrefix <- as.character(partyIds[['filePrefix']])
-
-    flog.info("Reading and formating donations to %s %s", partyName, year)
-    fileName <- paste(filePrefix, year, 'csv', sep = '.')
-    src <- paste(k$SourcePath, partyTag, fileName, sep = '/')
-    subset <- read.csv(src, header=FALSE, as.is=TRUE, encoding="UTF-8")
-
-    logg$SummaryInfo(
-      "%s records sourced from %s", util$FormatNum(nrow(subset)), fileName)
-
-
-    # formatting....
-    subset <- munge$InitializeRawDataCols(subset) %>%
-                munge$DoneeCols(partyTag, partyName) %>%
-                  munge$DateCols(year)
-
-    return(subset)
   }
 
 })
