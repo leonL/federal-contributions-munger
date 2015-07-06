@@ -24,6 +24,8 @@ k <- within(k, {
   OutputPath <- "../data/output"
 
   AllDataFileName <- "all_contributions.csv"
+
+  if(!exists("TEST")) { TEST <- FALSE }
 })
 
 # Utility functions

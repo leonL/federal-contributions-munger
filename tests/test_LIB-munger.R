@@ -85,8 +85,10 @@ test_that("util$TitleCase...", {
 
 test_that("util$GetPostalConcordSet caches data", {
   expect_false(is.data.frame(util$postalCodeConcord))
-  util$GetPostalConcordSet()
+  intialSet <- util$GetPostalConcordSet()
   expect_true(is.data.frame(util$postalCodeConcord))
+  expect_output(cacheSet <- util$GetPostalConcordSet(), "cache")
+  expect_equal(intialSet, cacheSet)
 })
 
 context("Inline Validators")
