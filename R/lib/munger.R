@@ -177,15 +177,24 @@ util <- within(util, {
     return(set)
   }
 
-  GetPostalConcordSet <- function() {
-    set <- util$ReadPostalCodeSrcCSV("postal_code_riding_geo_concordance.csv")
-    colnames(set) <- k$PostalCodeConcordanceColNames
-    return(set)
-  }
-
   GetFakePostalVector <- function() {
     set <- util$ReadPostalCodeSrcCSV("fake_postal_codes.csv")
     return(set$postal_code)
+  }
+
+  GetPostalConcordSet <- function() {
+    if(is.data.frame(util$postalCodeConcord)) {
+      set <- postalCodeConcord
+    } else {
+      set <- util$ReadPostalCodeSrcCSV("postal_code_riding_geo_concordance.csv")
+      colnames(set) <- k$PostalCodeConcordanceColNames
+      util$postalCodeConcord <<- set
+    }
+    return(set)
+  }
+
+  GetAmbiguousPostalCodes <- function() {
+
   }
 
 })

@@ -83,6 +83,12 @@ test_that("util$TitleCase...", {
   expect_equal(util$TitleCase(str), "Eddie Van Halen")
 })
 
+test_that("util$GetPostalConcordSet caches data", {
+  expect_false(is.data.frame(util$postalCodeConcord))
+  util$GetPostalConcordSet()
+  expect_true(is.data.frame(util$postalCodeConcord))
+})
+
 context("Inline Validators")
 
 
