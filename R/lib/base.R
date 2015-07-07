@@ -37,6 +37,7 @@ if(!exists("util")) { util <- list() }
 util <- within(util, {
 
   ReadSrcCSV <- function(filename, subfolder) {
+    if(test$running) { subfolder <- paste(subfolder, 'fixtures', sep = "/")}
     file <- paste(k$SourcePath, subfolder, filename, sep = '/')
     print(paste("Reading", file, "..."))
     csv <- read.csv(file, as.is=TRUE, encoding="UTF-8")
@@ -45,7 +46,6 @@ util <- within(util, {
 
   ReadPostalCodeSrcCSV <- function(filename) {
     subfolder <- 'postal_codes'
-    if(test$running) { subfolder <- paste(subfolder, 'fixtures', sep = "/")}
     ReadSrcCSV(filename, subfolder)
   }
 
