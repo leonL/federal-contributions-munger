@@ -191,7 +191,7 @@ util <- within(util, {
     return(util$postalCodeConcord)
   }
 
-  GetAmbiguousPostalCodesSubset <- function() {
+  GetAmbiguousPCodeConcordSubset <- function() {
     if(!is.data.frame(util$ambgPostalCodeConcord)) {
       concord <- GetPostalConcordSet()
       concordByPCode <- group_by(concord, postal_code)
@@ -201,6 +201,30 @@ util <- within(util, {
       util$ambgPostalCodeConcord <<- subset
     } else { test$Text('cache') }
     return(util$ambgPostalCodeConcord)
+  }
+
+  AmbiguousPostalCodesFilter <- function(dataSet, invertFilter=FALSE) {
+    ambiguousCodes <- util$GetAmbiguousPCodeConcordSubset()$postal_code
+    filter <- dataSet$postal_code %in% ambiguousCodes
+    if(invertFilter) { filter <- !filter }
+    filteredSet <- filter(dataSet, filter)
+    return(filteredSet)
+  }
+
+  AmbiguousPostalCodeConcordResolver <- function(contribRecord) {
+    possibleConcords <- filter(GetAmbiguousPCodeConcordSubset(),
+                                  postal_code == contribRecord$postal_code)
+
+    ridingMatches <-
+      contribRecord$target.riding_id == possibleConcords$contributor.riding_id
+    concord <-
+      if(any(ridingMatches)) {
+        filter(possibleConcords, ridingMatches)
+      } else {
+        sample_n(possibleConcords, 1)
+        test$Text('random')
+      }
+    merge(contribRecord, concord)
   }
 
 })

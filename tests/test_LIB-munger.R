@@ -84,20 +84,41 @@ test_that("util$TitleCase...", {
 })
 
 test_that("util$GetPostalConcordSet caches data", {
-  expect_false(is.data.frame(util$postalCodeConcord))
   intialSet <- util$GetPostalConcordSet()
-  expect_true(is.data.frame(util$postalCodeConcord))
   expect_output(cacheSet <- util$GetPostalConcordSet(), "cache")
   expect_equal(intialSet, cacheSet)
 })
 
-test_that("GetAmbiguousPostalCodesSubset returns only codes that reference multiple data points", {
-  initialSubset <- util$GetAmbiguousPostalCodesSubset()
+test_that("GetAmbiguousPCodeConcordSubset returns only codes that reference multiple data points", {
+  initialSubset <- util$GetAmbiguousPCodeConcordSubset()
   pcode <- initialSubset[1, 1]
+
   expect_equal(nrow(initialSubset), 2)
-  expect_equal(pcode, "A0A1C0")
-  expect_output(cacheSet <- util$GetAmbiguousPostalCodesSubset(), "cache")
+  expect_equal(pcode, "L4C9M2")
+  expect_output(cacheSet <- util$GetAmbiguousPCodeConcordSubset(), "cache")
   expect_equal(initialSubset, cacheSet)
+})
+
+test_that("AmbiguousPostalCodesFilter", {
+  mock$dataSet$postal_code <- munge$PostalCodes(mock$dataSet$postal_code)
+  ambigSubset <- util$AmbiguousPostalCodesFilter(mock$dataSet)
+  unambigSubset <- util$AmbiguousPostalCodesFilter(mock$dataSet, invertFilter=TRUE)
+
+  expect_equal(nrow(ambigSubset), 1)
+  expect_equal(ambigSubset$postal_code, "L4C9M2")
+  expect_equal(nrow(unambigSubset), 2)
+})
+
+test_that("AmbiguousPostalCodeConcordResolver", {
+  mock$dataSet$postal_code <- munge$PostalCodes(mock$dataSet$postal_code)
+  contribRecord <- mock$dataSet[2,]
+  contribRecord$target.riding_id <- 10001
+  mergedRecord <- util$AmbiguousPostalCodeConcordResolver(contribRecord)
+
+  expect_equal(mergedRecord$contributor.riding_id, 10001)
+
+  contribRecord$target.riding_id <- 10002
+  expect_output(util$AmbiguousPostalCodeConcordResolver(contribRecord), 'random')
 })
 
 context("Inline Validators")
