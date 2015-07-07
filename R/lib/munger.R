@@ -184,21 +184,19 @@ util <- within(util, {
 
   GetPostalConcordSet <- function() {
     if(!is.data.frame(util$postalCodeConcord)) {
-      util$postalCodeConcord <<- InitializePostalConcordSet()
+      set <- util$ReadPostalCodeSrcCSV("postal_code_riding_geo_concordance.csv")
+      colnames(set) <- k$PostalCodeConcordanceColNames
+      util$postalCodeConcord <<- set
     } else { if(k$TEST) {print('cache')} }
     return(util$postalCodeConcord)
   }
 
-  InitializePostalConcordSet <- function() {
-    if(!k$TEST) {
-      set <- util$ReadPostalCodeSrcCSV("postal_code_riding_geo_concordance.csv")
-      colnames(set) <- k$PostalCodeConcordanceColNames
-    } else {set <- data.frame(test=TRUE)}
-    return(set)
-  }
-
-  GetAmbiguousPostalCodes <- function() {
-
+  GetAmbiguousPostalCodesSubset <- function() {
+    concord <- GetPostalConcordSet()
+    concordByPCode <- group_by(concord, postal_code)
+    summary <- dplyr::summarise(concordByPCode, count=n())
+    ambgCodes <- filter(summary, count > 1) %>% select(postal_code)
+    return(ambgCodes)
   }
 
 })

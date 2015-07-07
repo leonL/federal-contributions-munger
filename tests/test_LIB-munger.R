@@ -91,8 +91,11 @@ test_that("util$GetPostalConcordSet caches data", {
   expect_equal(intialSet, cacheSet)
 })
 
-context("Inline Validators")
+test_that("GetAmbiguousPostalCodesSubset returns only codes that reference multiple data points", {
+  expect_equal(util$GetAmbiguousPostalCodesSubset()$postal_code, "A0A1C0")
+})
 
+context("Inline Validators")
 
 test_that("validate$AllRowsAccountedFor...", {
   setCount <- 100
