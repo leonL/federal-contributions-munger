@@ -92,7 +92,12 @@ test_that("util$GetPostalConcordSet caches data", {
 })
 
 test_that("GetAmbiguousPostalCodesSubset returns only codes that reference multiple data points", {
-  expect_equal(util$GetAmbiguousPostalCodesSubset()$postal_code, "A0A1C0")
+  initialSubset <- util$GetAmbiguousPostalCodesSubset()
+  pcode <- initialSubset[1, 1]
+  expect_equal(nrow(initialSubset), 2)
+  expect_equal(pcode, "A0A1C0")
+  expect_output(cacheSet <- util$GetAmbiguousPostalCodesSubset(), "cache")
+  expect_equal(initialSubset, cacheSet)
 })
 
 context("Inline Validators")

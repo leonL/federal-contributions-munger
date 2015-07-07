@@ -24,8 +24,6 @@ k <- within(k, {
   OutputPath <- "../data/output"
 
   AllDataFileName <- "all_contributions.csv"
-
-  if(!exists("TEST")) { TEST <- FALSE }
 })
 
 # Utility functions
@@ -41,7 +39,9 @@ util <- within(util, {
   }
 
   ReadPostalCodeSrcCSV <- function(filename) {
-    ReadSrcCSV(filename, "postal_codes")
+    subfolder <- 'postal_codes'
+    if(test$running) { subfolder <- paste(subfolder, 'fixtures', sep = "/")}
+    ReadSrcCSV(filename, subfolder)
   }
 
   ReadRidingSrcCSV <- function(filename) {
@@ -112,3 +112,16 @@ logg <- within(logg, {
 })
 
 flog.appender(appender.file(logg$summaryFile), name="data.summary")
+
+# Unit Test Helpers
+
+if(!exists("test")) { test <- list() }
+test <- within(test, {
+
+  if(!exists("running")) { running <- FALSE }
+
+  Text <- function(txt) {
+    if(running) { print(txt) }
+  }
+
+})

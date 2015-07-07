@@ -187,16 +187,20 @@ util <- within(util, {
       set <- util$ReadPostalCodeSrcCSV("postal_code_riding_geo_concordance.csv")
       colnames(set) <- k$PostalCodeConcordanceColNames
       util$postalCodeConcord <<- set
-    } else { if(k$TEST) {print('cache')} }
+    } else { test$Text('cache') }
     return(util$postalCodeConcord)
   }
 
   GetAmbiguousPostalCodesSubset <- function() {
-    concord <- GetPostalConcordSet()
-    concordByPCode <- group_by(concord, postal_code)
-    summary <- dplyr::summarise(concordByPCode, count=n())
-    ambgCodes <- filter(summary, count > 1) %>% select(postal_code)
-    return(ambgCodes)
+    if(!is.data.frame(util$ambgPostalCodeConcord)) {
+      concord <- GetPostalConcordSet()
+      concordByPCode <- group_by(concord, postal_code)
+      summary <- dplyr::summarise(concordByPCode, count=n())
+      ambgCodes <- filter(summary, count > 1)
+      subset <- filter(concord, postal_code %in% ambgCodes$postal_code)
+      util$ambgPostalCodeConcord <<- subset
+    } else { test$Text('cache') }
+    return(util$ambgPostalCodeConcord)
   }
 
 })
