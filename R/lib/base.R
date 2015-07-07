@@ -1,3 +1,8 @@
+# load dependencies
+
+library(plyr, quietly=TRUE, warn.conflicts=FALSE)
+library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
+
 # Constants
 
 if(!exists("k")) { k <- list() }
