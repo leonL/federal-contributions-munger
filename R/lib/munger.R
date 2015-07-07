@@ -113,6 +113,20 @@ munge <- within(munge, {
     return(nonEstateContribs)
   }
 
+  MergeInPostalCodeConcordance <- function(dataSet) {
+    ambigPCodeContribs <- util$AmbiguousPostalCodesFilter(dataSet)
+    ambigPCodeContribsMerged <-
+      adply(ambigPCodeContribs, 1, util$AmbiguousPostalCodeConcordResolver)
+
+    unambiguousPCodeContribs <- util$AmbiguousPostalCodesFilter(dataSet, TRUE)
+    unambigPCodeContribsMerged <-
+      merge(unambiguousPCodeContribs, util$GetPostalConcordSet())
+
+    dataSetMerged <- rbind(ambigPCodeContribsMerged, unambigPCodeContribsMerged)
+    # validate that I return the same number of records and that there is a contributor.riding_id for all of them
+    return(dataSetMerged)
+  }
+
 })
 
 # Utility functions
@@ -217,12 +231,13 @@ util <- within(util, {
 
     ridingMatches <-
       contribRecord$target.riding_id == possibleConcords$contributor.riding_id
+    ridingMatches[is.na(ridingMatches)] <- FALSE
     concord <-
       if(any(ridingMatches)) {
         filter(possibleConcords, ridingMatches)
       } else {
-        sample_n(possibleConcords, 1)
         test$Text('random')
+        sample_n(possibleConcords, 1)
       }
     merge(contribRecord, concord)
   }
