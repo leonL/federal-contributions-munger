@@ -120,10 +120,11 @@ munge <- within(munge, {
 
     unambiguousPCodeContribs <- util$AmbiguousPostalCodesFilter(dataSet, TRUE)
     unambigPCodeContribsMerged <-
-      merge(unambiguousPCodeContribs, util$GetPostalConcordSet())
+      merge(unambiguousPCodeContribs, util$GetPostalConcordSet(), all.x=TRUE)
 
     dataSetMerged <- rbind(ambigPCodeContribsMerged, unambigPCodeContribsMerged)
-    # validate that I return the same number of records and that there is a contributor.riding_id for all of them
+    validate$AllPostalCodesMerged(dataSet, dataSetMerged)
+
     return(dataSetMerged)
   }
 
@@ -155,7 +156,7 @@ util <- within(util, {
     }
 
     # stop execuition if the compiled data set does not contain all the source csv rows
-    validate$AllRowsAccountedFor(nrow(aggregateSet), rowCounts$n)
+    validate$AllSubsetRowsAccountedFor(nrow(aggregateSet), rowCounts$n)
 
     logg$SummaryInfo(
       "%s records sourced in all", util$FormatNum(nrow(aggregateSet)))
@@ -249,15 +250,23 @@ util <- within(util, {
 if(!exists("validate")) { validate <- list() }
 validate <- within(validate, {
 
-  AllRowsAccountedFor <- function(setRowCount, sourceRowCounts) {
+  AllSubsetRowsAccountedFor <- function(setRowCount, sourceRowCounts) {
     subsetRowCount <- sum(sourceRowCounts)
     Base(setRowCount == subsetRowCount,
-      errorMsgs$RowCount(subsetRowCount, setRowCount))
+      errorMsgs$UnaccountedForSubsetRows(subsetRowCount, setRowCount))
   }
 
   AllRidingsNormalized <- function(ridingIds) {
     nRowsNotNormalized <- length(which(is.na(ridingIds)))
     IsNotNA(ridingIds, errorMsgs$UnknownRidings(nRowsNotNormalized))
+  }
+
+  AllPostalCodesMerged <- function(data, mergedData) {
+    Base(nrow(data) == nrow(mergedData), "Postal Code Concordance merger dropped some rows!")
+    IsNotNA(mergedData$contributor.riding_id, errorMsgs$UnknownPostalCodes())
+  }
+
+  DataMergedInForAllPCodes <- function(riding_ids) {
   }
 })
 
@@ -266,8 +275,8 @@ validate <- within(validate, {
 if(!exists("errorMsgs")) { errorMsgs <- list() }
 errorMsgs <- within(errorMsgs, {
 
-  RowCount <- function(subsetN, dataSetN) {
-    paste("There's a discrepancy between the data set and subset row counts.\n",
+  UnaccountedForSubsetRows <- function(subsetN, dataSetN) {
+    paste("There's a discrepancy between the data set and total subset row counts.\n",
           "All the subset rows summed:", subsetN, "\n",
           "Data set row count:", dataSetN, "\n",
           "Difference:", abs(subsetN - dataSetN)
@@ -278,5 +287,10 @@ errorMsgs <- within(errorMsgs, {
     paste("There was a problem normalizing the target riding names.\n",
           nRowsNotNormalized, "were not normalized."
     )
+  }
+
+  UnknownPostalCodes <- function() {
+    paste("The Postal Code Concordance merge didn't resolve every postal code.",
+          "Try running resolve_unknown_postal_code.rb")
   }
 })
