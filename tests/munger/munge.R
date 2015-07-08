@@ -1,11 +1,8 @@
-source('../R/lib/munger.R', chdir=TRUE)
+context("Munger functions")
 
 mock <- within(list(), {
   dataSet <- util$ReadSrcCSV('contributions.csv', 'contributions')
 })
-
-
-context("Munger functions")
 
 test_that("munge$DoneeCols...", {
   partyName <- "Conservative Party of Canada"
@@ -76,54 +73,4 @@ test_that("MergeWithPCodeConcordanceByRiding", {
 
   expect_equal(nrow(rowsWithConcord), 1)
   expect_equal(rowsWithConcord$contributor.riding_name, "Avalon")
-})
-
-context("Utility functions")
-
-test_that("util$TitleCase...", {
-  str <- "eddie van halen"
-  expect_equal(util$TitleCase(str), "Eddie Van Halen")
-})
-
-test_that("util$GetPostalConcordSet caches data", {
-  intialSet <- util$GetPostalConcordSet()
-  expect_output(cacheSet <- util$GetPostalConcordSet(), "cache")
-  expect_equal(intialSet, cacheSet)
-})
-
-test_that("GetDedupedPostalConcordSet...", {
-  allConcords <- util$GetPostalConcordSet()
-  L4C9M2 <- filter(allConcords, postal_code == 'L4C9M2')
-  expect_equal(nrow(L4C9M2), 2)
-
-  deduped <- util$GetDedupedPostalConcordSet()
-  L4C9M2 <- filter(deduped, postal_code == 'L4C9M2')
-  expect_equal(nrow(L4C9M2), 1)
-
-  expect_output(util$GetDedupedPostalConcordSet(), "cache")
-})
-
-context("Inline Validators")
-
-test_that("validate$AllSubsetRowsAccountedFor...", {
-  setCount <- 100
-  validSubsetCounts <- c(30, 20, 50)
-  invalidSubsetCounts <- c(10, 40, 66)
-  expect_true(validate$AllSubsetRowsAccountedFor(setCount, validSubsetCounts))
-  expect_error(validate$AllSubsetRowsAccountedFor(setCount, invalidSubsetCounts))
-})
-
-test_that("validate$AllRidingsNormalized...", {
-  ids <- c(1,2,3)
-  expect_true(validate$AllRidingsNormalized(ids))
-  ids[4] <- NA
-  expect_error(validate$AllRidingsNormalized(ids))
-})
-
-test_that("AllPostalCodesMerged", {
-  mock$dataSet$contributor.riding_id <- 10001
-  expect_true(validate$AllPostalCodesMerged(mock$dataSet, mock$dataSet))
-  expect_error(validate$AllPostalCodesMerged(mock$dataSet, data.frame()))
-  mock$dataSet$contributor.riding_id <- NA
-  expect_error(validate$AllPostalCodesMerged(mock$dataSet, mock$dataSet))
 })
