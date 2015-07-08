@@ -114,6 +114,9 @@ munge <- within(munge, {
   }
 
   MergeWithPCodeConcordance <- function(dataSet) {
+    flog.info(
+      "Merging in postal code concordance cols where target and contributor ridings match..."
+    )
     ridingSpecificMergeResult <- MergeWithPCodeConcordanceByRiding(dataSet)
 
     recordHasRidingSpecificConcord <-
@@ -125,6 +128,10 @@ munge <- within(munge, {
                                   ridingSpecificMergeSuccess$target.riding_id
 
     ridingSpecificMergeFailure <- filter(dataSet, !recordHasRidingSpecificConcord)
+    flog.info(
+      "Merging in postal code concordance cols for %s remaining records...",
+       nrow(ridingSpecificMergeFailure)
+    )
     dedupedMergeResut <-
       merge(ridingSpecificMergeFailure, util$GetDedupedPostalConcordSet())
 
