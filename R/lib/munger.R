@@ -132,17 +132,6 @@ munge <- within(munge, {
     validate$AllPostalCodesMerged(dataSet, dataSetMerged)
 
     return(dataSetMerged)
-
-    # ambigPCodeContribs <- util$AmbiguousPostalCodesFilter(dataSet)
-    # flog.info("Merging in geo data for %s records with ambiguous postal codes...",
-    #             nrow(ambigPCodeContribs))
-    # ambigPCodeContribsMerged <-
-    #   adply(ambigPCodeContribs, 1, util$AmbiguousPostalCodeConcordResolver)
-
-    # unambiguousPCodeContribs <- util$AmbiguousPostalCodesFilter(dataSet, TRUE)
-    # flog.info("Merging in geo data for unambiguous postal codes...")
-    # unambigPCodeContribsMerged <-
-    #   merge(unambiguousPCodeContribs, util$GetPostalConcordSet(), all.x=TRUE)
   }
 
   MergeWithPCodeConcordanceByRiding <- function(dataSet) {
@@ -235,44 +224,6 @@ util <- within(util, {
   GetDedupedPostalConcordSet <- function() {
     filter(GetPostalConcordSet(), !duplicated(postal_code))
   }
-
-  GetAmbiguousPCodeConcordSubset <- function() {
-    if(!is.data.frame(util$ambgPostalCodeConcord)) {
-      concord <- GetPostalConcordSet()
-      concordByPCode <- group_by(concord, postal_code)
-      summary <- dplyr::summarise(concordByPCode, count=n())
-      ambgCodes <- filter(summary, count > 1)
-      subset <- filter(concord, postal_code %in% ambgCodes$postal_code)
-      util$ambgPostalCodeConcord <<- subset
-    } else { test$Text('cache') }
-    return(util$ambgPostalCodeConcord)
-  }
-
-  AmbiguousPostalCodesFilter <- function(dataSet, invertFilter=FALSE) {
-    ambiguousCodes <- util$GetAmbiguousPCodeConcordSubset()$postal_code
-    filter <- dataSet$postal_code %in% ambiguousCodes
-    if(invertFilter) { filter <- !filter }
-    filteredSet <- filter(dataSet, filter)
-    return(filteredSet)
-  }
-
-  AmbiguousPostalCodeConcordResolver <- function(contribRecord) {
-    possibleConcords <- filter(GetAmbiguousPCodeConcordSubset(),
-                                  postal_code == contribRecord$postal_code)
-
-    ridingMatches <-
-      contribRecord$target.riding_id == possibleConcords$contributor.riding_id
-    ridingMatches[is.na(ridingMatches)] <- FALSE
-    concord <-
-      if(any(ridingMatches)) {
-        filter(possibleConcords, ridingMatches)
-      } else {
-        test$Text('random')
-        sample_n(possibleConcords, 1)
-      }
-    merge(contribRecord, concord)
-  }
-
 })
 
 # Inline validation
