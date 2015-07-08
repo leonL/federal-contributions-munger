@@ -99,6 +99,8 @@ test_that("GetDedupedPostalConcordSet...", {
   deduped <- util$GetDedupedPostalConcordSet()
   L4C9M2 <- filter(deduped, postal_code == 'L4C9M2')
   expect_equal(nrow(L4C9M2), 1)
+
+  expect_output(util$GetDedupedPostalConcordSet(), "cache")
 })
 
 context("Inline Validators")

@@ -222,7 +222,11 @@ util <- within(util, {
   }
 
   GetDedupedPostalConcordSet <- function() {
-    filter(GetPostalConcordSet(), !duplicated(postal_code))
+    if(!is.data.frame(util$dedupedPostalCodeConcord)) {
+      util$dedupedPostalCodeConcord <<-
+        filter(GetPostalConcordSet(), !duplicated(postal_code))
+    } else { test$Text('cache') }
+    return(util$dedupedPostalCodeConcord)
   }
 })
 
