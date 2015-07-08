@@ -88,6 +88,14 @@ munge <- within(munge, {
     return(nonEstateContribs)
   }
 
+  NormalizeRidingNames <- function(dataSet) {
+    newSet <- merge(dataSet, util$GetRidingConcordSet(), all.x=TRUE)
+    newSet <- select(newSet, -party_riding)
+    ridingIds <- filter(newSet, donee.riding_level) %>% select(target.riding_id)
+    validate$AllRidingsNormalized(ridingIds)
+    return(newSet)
+  }
+
   MergeWithPCodeConcordance <- function(dataSet) {
     flog.info(
       "Merging in postal code concordance cols where target and contributor ridings match..."

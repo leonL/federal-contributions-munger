@@ -16,9 +16,7 @@ dataSet <- within(dataSet, {
 dataSet <- munge$FilterOutUnusableRows(dataSet)
 
 # replace party specific riding names with normalized riding names
-dataSet <- merge(dataSet, util$GetRidingConcordSet(), all.x=TRUE)
-ridingIds <- filter(dataSet, donee.riding_level) %>% select(target.riding_id)
-validate$AllRidingsNormalized(ridingIds)
+dataSet <- munge$NormalizeRidingNames(dataSet)
 
 # add city, provice, contributor.riding, and geolocation columns based on postal code
 dataSet <- munge$MergeWithPCodeConcordance(dataSet)
