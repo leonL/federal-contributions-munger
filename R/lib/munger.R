@@ -113,19 +113,45 @@ munge <- within(munge, {
     return(nonEstateContribs)
   }
 
-  MergeInPostalCodeConcordance <- function(dataSet) {
-    ambigPCodeContribs <- util$AmbiguousPostalCodesFilter(dataSet)
-    ambigPCodeContribsMerged <-
-      adply(ambigPCodeContribs, 1, util$AmbiguousPostalCodeConcordResolver)
+  MergeWithPCodeConcordance <- function(dataSet) {
+    ridingSpecificMergeResult <- MergeWithPCodeConcordanceByRiding(dataSet)
 
-    unambiguousPCodeContribs <- util$AmbiguousPostalCodesFilter(dataSet, TRUE)
-    unambigPCodeContribsMerged <-
-      merge(unambiguousPCodeContribs, util$GetPostalConcordSet(), all.x=TRUE)
+    recordHasRidingSpecificConcord <-
+      !is.na(ridingSpecificMergeResult$contributor.riding_name)
 
-    dataSetMerged <- rbind(ambigPCodeContribsMerged, unambigPCodeContribsMerged)
+    ridingSpecificMergeSuccess <-
+      filter(ridingSpecificMergeResult, recordHasRidingSpecificConcord)
+    ridingSpecificMergeSuccess$contributor.riding_id <-
+                                  ridingSpecificMergeSuccess$target.riding_id
+
+    ridingSpecificMergeFailure <- filter(dataSet, !recordHasRidingSpecificConcord)
+    dedupedMergeResut <-
+      merge(ridingSpecificMergeFailure, util$GetDedupedPostalConcordSet())
+
+    dataSetMerged <- rbind(ridingSpecificMergeSuccess, dedupedMergeResut)
     validate$AllPostalCodesMerged(dataSet, dataSetMerged)
 
     return(dataSetMerged)
+
+    # ambigPCodeContribs <- util$AmbiguousPostalCodesFilter(dataSet)
+    # flog.info("Merging in geo data for %s records with ambiguous postal codes...",
+    #             nrow(ambigPCodeContribs))
+    # ambigPCodeContribsMerged <-
+    #   adply(ambigPCodeContribs, 1, util$AmbiguousPostalCodeConcordResolver)
+
+    # unambiguousPCodeContribs <- util$AmbiguousPostalCodesFilter(dataSet, TRUE)
+    # flog.info("Merging in geo data for unambiguous postal codes...")
+    # unambigPCodeContribsMerged <-
+    #   merge(unambiguousPCodeContribs, util$GetPostalConcordSet(), all.x=TRUE)
+  }
+
+  MergeWithPCodeConcordanceByRiding <- function(dataSet) {
+    merge(
+      dataSet, util$GetPostalConcordSet(),
+      by.x = c('postal_code', 'target.riding_id'),
+      by.y = c('postal_code', 'contributor.riding_id'),
+      all.x = TRUE
+    )
   }
 
 })
@@ -204,6 +230,10 @@ util <- within(util, {
       util$postalCodeConcord <<- set
     } else { test$Text('cache') }
     return(util$postalCodeConcord)
+  }
+
+  GetDedupedPostalConcordSet <- function() {
+    filter(GetPostalConcordSet(), !duplicated(postal_code))
   }
 
   GetAmbiguousPCodeConcordSubset <- function() {

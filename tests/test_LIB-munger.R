@@ -62,11 +62,20 @@ test_that("munge$FilterOutFakePostalCodes...", {
   expect_false("S0S0S0" %in% dataSet$postal_code)
 })
 
-test_that("MergeInPostalCodeConcordance...", {
+test_that("MergeWithPCodeConcordance...", {
   # returns a data set with the same number of rows as the one that was passed into it
   dataSet <- util$ReadSrcCSV('ready_to_merge_pcodes.csv', 'contributions')
-  result <- munge$MergeInPostalCodeConcordance(dataSet)
+  result <- munge$MergeWithPCodeConcordance(dataSet)
   expect_equal(nrow(result), nrow(dataSet))
+})
+
+test_that("MergeWithPCodeConcordanceByRiding", {
+  dataSet <- util$ReadSrcCSV('ready_to_merge_pcodes.csv', 'contributions')
+  result <- munge$MergeWithPCodeConcordanceByRiding(dataSet)
+  rowsWithConcord <- filter(result, !is.na(contributor.riding_name))
+
+  expect_equal(nrow(rowsWithConcord), 1)
+  expect_equal(rowsWithConcord$contributor.riding_name, "Avalon")
 })
 
 context("Utility functions")
@@ -80,6 +89,16 @@ test_that("util$GetPostalConcordSet caches data", {
   intialSet <- util$GetPostalConcordSet()
   expect_output(cacheSet <- util$GetPostalConcordSet(), "cache")
   expect_equal(intialSet, cacheSet)
+})
+
+test_that("GetDedupedPostalConcordSet...", {
+  allConcords <- util$GetPostalConcordSet()
+  L4C9M2 <- filter(allConcords, postal_code == 'L4C9M2')
+  expect_equal(nrow(L4C9M2), 2)
+
+  deduped <- util$GetDedupedPostalConcordSet()
+  L4C9M2 <- filter(deduped, postal_code == 'L4C9M2')
+  expect_equal(nrow(L4C9M2), 1)
 })
 
 test_that("GetAmbiguousPCodeConcordSubset returns only codes that reference multiple data points", {
