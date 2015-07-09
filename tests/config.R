@@ -1,2 +1,2 @@
 test$running=TRUE
-k$dataPath <- "../data/fixtures"
+k$dataPath <- "../data/test"
