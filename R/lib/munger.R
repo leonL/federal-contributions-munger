@@ -25,7 +25,9 @@ k <- within(k, {
     "^[ABCEGHJKLMNPRSTVXY]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}$"
 })
 
-# Inline validation
+# Inline validations ... Used to validate SENSITIVE data transformations in
+# production so that badly corrupted data does not slip through (more general
+# transformations are validated by unit tests)
 
 if(!exists("validate")) { validate <- list() }
 validate <- within(validate, {
@@ -44,9 +46,6 @@ validate <- within(validate, {
   AllPostalCodesMerged <- function(data, mergedData) {
     Base(nrow(data) == nrow(mergedData), "Postal Code Concordance merger dropped some rows!")
     IsNotNA(mergedData$contributor.riding_id, errorMsgs$UnknownPostalCodes())
-  }
-
-  DataMergedInForAllPCodes <- function(riding_ids) {
   }
 })
 
