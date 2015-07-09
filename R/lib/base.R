@@ -32,21 +32,21 @@ k <- within(k, {
   SourcePath <- function() {
     if(is.null(k$sourcePath)) {
       k$sourcePath <<- paste(k$dataPath, 'source', sep = '/')
-    } else { test$Text('cache') }
+    }
     return(k$sourcePath)
   }
 
   OutputPath <- function() {
     if(is.null(k$outputPath)) {
       k$outputPath <<- paste(k$dataPath, 'output', sep = '/')
-    } else { test$Text('cache') }
+    }
     return(k$outputPath)
   }
 
   ContribsSrcPath <- function() {
     if(is.null(k$contribsSrcPath)) {
       k$contribsSrcPath <<- paste(SourcePath(), 'contributions', sep = '/')
-    } else { test$Text('cache') }
+    }
     return(k$contribsSrcPath)
   }
 })
@@ -77,7 +77,12 @@ library(futile.logger, quietly=TRUE, warn.conflicts=FALSE)
 if(!exists("logg")) { logg <- list() }
 logg <- within(logg, {
 
-  summaryFile <- paste(k$OutputPath(), "data_summary.log", sep = '/')
+  SummaryFile <- function() {
+    if(is.null(logg$summaryFile)) {
+      logg$summaryFile <<- paste(k$OutputPath(), "data_summary.log", sep = '/')
+    }
+    return(logg$summaryFile)
+  }
 
   SummaryInfo <- function(msg, ...) {
     flog.info(msg, ..., name="data.summary")
@@ -90,7 +95,7 @@ logg <- within(logg, {
   }
 })
 
-flog.appender(appender.file(logg$summaryFile), name="data.summary")
+flog.appender(appender.file(logg$SummaryFile()), name="data.summary")
 
 # Unit Test Helpers
 
