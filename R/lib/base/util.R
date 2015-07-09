@@ -4,8 +4,7 @@ if(!exists("util")) { util <- list() }
 util <- within(util, {
 
   ReadSrcCSV <- function(filename, subfolder) {
-    if(test$running) { subfolder <- paste(subfolder, 'fixtures', sep = "/")}
-    file <- paste(k$SourcePath, subfolder, filename, sep = '/')
+    file <- paste(k$SourcePath(), subfolder, filename, sep = '/')
     print(paste("Reading", file, "..."))
     csv <- read.csv(file, as.is=TRUE, encoding="UTF-8")
     return(csv)
@@ -21,7 +20,7 @@ util <- within(util, {
   }
 
   SaveCSV <- function(data, filename=k$AllDataFileName) {
-    file <- paste(k$OutputPath, filename, sep = '/')
+    file <- paste(k$OutputPath(), filename, sep = '/')
     print(paste("Writing", file, "..."))
     write.csv(data, file=file, row.names=FALSE)
   }

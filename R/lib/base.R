@@ -5,7 +5,7 @@ library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
 
 source('base/util.R')
 
-# Constants
+# Constants & Config
 
 if(!exists("k")) { k <- list() }
 k <- within(k, {
@@ -25,12 +25,30 @@ k <- within(k, {
   ProviceLevels <-
     c("AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT", NA)
 
-  SourcePath <- "../data/source"
-  ContribsSrcPath <- paste(SourcePath, "contributions", sep='/')
-
-  OutputPath <- "../data/output"
-
   AllDataFileName <- "all_contributions.csv"
+
+  dataPath <- "../data"
+
+  SourcePath <- function() {
+    if(is.null(k$sourcePath)) {
+      k$sourcePath <<- paste(k$dataPath, 'source', sep = '/')
+    } else { test$Text('cache') }
+    return(k$sourcePath)
+  }
+
+  OutputPath <- function() {
+    if(is.null(k$outputPath)) {
+      k$outputPath <<- paste(k$dataPath, 'output', sep = '/')
+    } else { test$Text('cache') }
+    return(k$outputPath)
+  }
+
+  ContribsSrcPath <- function() {
+    if(is.null(k$contribsSrcPath)) {
+      k$contribsSrcPath <<- paste(SourcePath(), 'contributions', sep = '/')
+    } else { test$Text('cache') }
+    return(k$contribsSrcPath)
+  }
 })
 
 # Inline validation
@@ -59,7 +77,7 @@ library(futile.logger, quietly=TRUE, warn.conflicts=FALSE)
 if(!exists("logg")) { logg <- list() }
 logg <- within(logg, {
 
-  summaryFile <- paste(k$OutputPath, "data_summary.log", sep = '/')
+  summaryFile <- paste(k$OutputPath(), "data_summary.log", sep = '/')
 
   SummaryInfo <- function(msg, ...) {
     flog.info(msg, ..., name="data.summary")
@@ -79,10 +97,9 @@ flog.appender(appender.file(logg$summaryFile), name="data.summary")
 if(!exists("test")) { test <- list() }
 test <- within(test, {
 
-  if(!exists("running")) { running <- FALSE }
+  running <- FALSE
 
   Text <- function(txt) {
-    if(running) { print(txt) }
+    if(test$running) { print(txt) }
   }
-
 })

@@ -1,4 +1,5 @@
 source('../R/lib/base.R', chdir=TRUE)
+source('config.R')
 
 flog.threshold(FATAL)
 

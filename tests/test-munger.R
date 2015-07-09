@@ -1,4 +1,6 @@
 source('../R/lib/munger.R', chdir=TRUE)
+source('config.R')
+
 source('munger/munge.R')
 source('munger/util.R')
 
