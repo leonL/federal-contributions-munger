@@ -1,8 +1,8 @@
 source('../R/lib/munger.R', chdir=TRUE)
 source('config.R')
 
-source('munger/munge.R')
-source('munger/util.R')
+source('munger/test-munge.R')
+source('munger/test-util.R')
 
 mock <- within(list(), {
   dataSet <- util$ReadSrcCSV('contributions.csv', 'contributions')
