@@ -24,10 +24,10 @@ munge <- within(munge, {
   DateCols <- function(dataSet, currentYear) {
     dataSet <- within(dataSet, {
       contrib.date <- as.Date(str_trim(contrib.date), format="%b %d, %Y")
-      contrib.month.day <- strftime(contrib.date, "%m-%d")
+      correctedDate <- paste(currentYear, strftime(contrib.date, "%m-%d"), sep='-')
+      contrib.date <- correctedDate
       contrib.year <- currentYear
     })
-    dataSet <- select(dataSet, -contrib.date)
     return(dataSet)
   }
 
