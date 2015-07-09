@@ -13,3 +13,6 @@ all_contributions.csv
 
 .Rproj.user
 *.Rproj
+
+data/output/*
+data/test/output/*
