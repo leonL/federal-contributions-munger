@@ -4,10 +4,6 @@ source('config.R')
 source('munger/test-munge.R')
 source('munger/test-util.R')
 
-mock <- within(list(), {
-  dataSet <- util$ReadSrcCSV('contributions.csv', 'contributions')
-})
-
 context("Inline Validators")
 
 test_that("validate$AllSubsetRowsAccountedFor...", {
@@ -26,9 +22,10 @@ test_that("validate$AllRidingsNormalized...", {
 })
 
 test_that("AllPostalCodesMerged", {
-  mock$dataSet$contributor.riding_id <- 10001
-  expect_true(validate$AllPostalCodesMerged(mock$dataSet, mock$dataSet))
-  expect_error(validate$AllPostalCodesMerged(mock$dataSet, data.frame()))
-  mock$dataSet$contributor.riding_id <- NA
-  expect_error(validate$AllPostalCodesMerged(mock$dataSet, mock$dataSet))
+  dataSet <- util$ReadSrcCSV('contributions.csv', 'contributions')
+  dataSet$contributor.riding_id <- 10001
+  expect_true(validate$AllPostalCodesMerged(dataSet, dataSet))
+  expect_error(validate$AllPostalCodesMerged(dataSet, data.frame()))
+  dataSet$contributor.riding_id <- NA
+  expect_error(validate$AllPostalCodesMerged(dataSet, dataSet))
 })
