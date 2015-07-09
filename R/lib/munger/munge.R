@@ -50,7 +50,8 @@ munge <- within(munge, {
   FilterOutUnusableRows <- function(dataSet) {
     dataSet <- FilterOutInvalidPostalCodes(dataSet) %>%
                 FilterOutFakePostalCodes() %>%
-                  FilterOutEstateContributions()
+                  FilterOutEstateContributions() %>%
+                    FilterOutZeroValues()
     return(dataSet)
   }
 
@@ -86,6 +87,17 @@ munge <- within(munge, {
 
     nonEstateContribs <- filter(dataSet, !isEstate)
     return(nonEstateContribs)
+  }
+
+  FilterOutZeroValues <- function(dataSet) {
+    flog.info("Filtering out contributions with an amount of $0...")
+    isZero <- dataSet$contrib.amount == 0
+
+    zeroContribs <- filter(dataSet, isZero)
+    util$SaveCSV(zeroContribs, "unused_rows.zero_contribs.csv")
+
+    nonZeroContribs <- filter(dataSet, !isZero)
+    return(nonZeroContribs)
   }
 
   NormalizeRidingNames <- function(dataSet) {

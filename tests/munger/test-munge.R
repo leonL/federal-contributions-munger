@@ -57,6 +57,13 @@ test_that("FilterOutFakePostalCodes...", {
   expect_false("S0S0S0" %in% dataSet$postal_code)
 })
 
+test_that("FilterOutZeroValues removes records with amount of $0", {
+  dataSet$contrib.amount <- c(NA, 0, 0.10)
+  result <- munge$FilterOutZeroValues(dataSet)
+  expect_equal(nrow(result), 1)
+  expect_equal(result$contrib.amount, 0.10)
+})
+
 test_that('NormalizeRidingNames...', {
   data <- util$ReadSrcCSV('ready_to_normalize_riding_name.csv', 'contributions')
   expect_equal(data$party_riding, "York--Simcoe Conservative Association")
