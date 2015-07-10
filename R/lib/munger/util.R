@@ -11,8 +11,6 @@ util <- within(util, {
     for(partyTag in k$PartyTags) {
       for(year in k$AllContribYears) {
 
-        flog.info("Initializing contributions made to the %s in %s.", partyTag, year)
-
         subset <- util$GetContribsSubset(partyTag, year) %>%
                     FormatContributionsSubset(partyTag, year)
 

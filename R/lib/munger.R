@@ -73,3 +73,14 @@ errorMsgs <- within(errorMsgs, {
           "Try running resolve_unknown_postal_code.rb")
   }
 })
+
+# Logging
+
+if(!exists("logg")) { logg <- list() }
+logg <- within(logg, {
+
+  UnusableRows <- function(reason, nRows) {
+    SummaryInfo("Filtered out %s unsuable rows: %s", util$FormatNum(nRows), reason)
+  }
+
+})

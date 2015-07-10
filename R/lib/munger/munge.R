@@ -48,61 +48,64 @@ munge <- within(munge, {
   }
 
   FilterOutUnusableRows <- function(dataSet) {
+    nRowsBefore <- nrow(dataSet)
     dataSet <- FilterOutInvalidPostalCodes(dataSet) %>%
                 FilterOutFakePostalCodes() %>%
                   FilterOutEstateContributions() %>%
                     FilterOutZeroValues() %>%
                       FilterOutNegativeContribs()
+    nRowsAfter <- nrow(dataSet)
+    logg$SummaryInfo("Filtered out %s unsuable rows total",
+                    util$FormatNum(nRowsBefore - nRowsAfter))
     return(dataSet)
   }
 
   FilterOutInvalidPostalCodes <- function(dataSet) {
-    flog.info("Filtering out invalid postal codes...")
     validCodes <- grepl(k$PostalCodeRegex, dataSet$postal_code)
 
     rowsWithInvalidPostal <- filter(dataSet, !validCodes)
     util$SaveUnusableCSV(rowsWithInvalidPostal, "invalid_pcodes.csv")
+    logg$UnusableRows("invalid postal codes", nrow(rowsWithInvalidPostal))
 
     rowsWithValidPostal <- filter(dataSet, validCodes)
     return(rowsWithValidPostal)
   }
 
   FilterOutFakePostalCodes <- function(dataSet) {
-    flog.info("Filtering out fake postal codes...")
     fakeCodes <- util$GetFakePostalVector()
     isFake <- dataSet$postal_code %in% fakeCodes
 
     rowsWithFakePostal <- filter(dataSet, isFake)
     util$SaveUnusableCSV(rowsWithFakePostal, "fake_pcodes.csv")
+    logg$UnusableRows("fake postal codes", nrow(rowsWithFakePostal))
 
     rowsWithRealPostalCodes <- filter(dataSet, !(isFake))
     return(rowsWithRealPostalCodes)
   }
 
   FilterOutEstateContributions <- function(dataSet) {
-    flog.info("Filtering out estate contributions...")
     isEstate <- grepl("estate", dataSet$donor.name, ignore.case = TRUE)
 
     estateContribs <- filter(dataSet, isEstate)
     util$SaveUnusableCSV(estateContribs, "estate_contribs.csv")
+    logg$UnusableRows("estate contributions", nrow(estateContribs))
 
     nonEstateContribs <- filter(dataSet, !isEstate)
     return(nonEstateContribs)
   }
 
   FilterOutZeroValues <- function(dataSet) {
-    flog.info("Filtering out contributions with an amount of $0...")
     isZero <- dataSet$contrib.amount == 0
 
     zeroContribs <- filter(dataSet, isZero)
     util$SaveUnusableCSV(zeroContribs, "zero_contribs.csv")
+    logg$UnusableRows("zero or no contribution amount", nrow(zeroContribs))
 
     nonZeroContribs <- filter(dataSet, !isZero)
     return(nonZeroContribs)
   }
 
   FilterOutNegativeContribs <- function(dataSet) {
-    flog.info("Filtering out negative contributions and coresponding records...")
     negativeContribsIndex <- which(dataSet$contrib.amount < 0)
     negativeContribs <- dataSet[negativeContribsIndex, ]
     positiveMatchIndex <- util$MatchingPostivieContribIndices(negativeContribs, dataSet)
@@ -111,6 +114,7 @@ munge <- within(munge, {
 
     filteredOutData <- dataSet[filterIndex, ]
     util$SaveUnusableCSV(filteredOutData, "negative_contribs.csv")
+    logg$UnusableRows("negative and matching positive contributions", nrow(filteredOutData))
 
     filteredData <- dataSet[-filterIndex,]
     return(filteredData)

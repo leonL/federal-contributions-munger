@@ -56,21 +56,22 @@ library(futile.logger, quietly=TRUE, warn.conflicts=FALSE)
 if(!exists("logg")) { logg <- list() }
 logg <- within(logg, {
 
-  SummaryFile <- function() {
-    if(is.null(logg$summaryFile)) {
-      logg$summaryFile <<- paste(util$OutputPath(), "data_summary.log", sep = '/')
-    }
-    return(logg$summaryFile)
-  }
-
   SummaryInfo <- function(msg, ...) {
     flog.info(msg, ..., name="data.summary")
+    flog.info(msg, ...)
     return(NULL)
   }
 
   SummaryInlineValidationError <- function(msg, ...) {
     flog.fatal(msg, ..., name="data.summary")
     return(NULL)
+  }
+
+  SummaryFile <- function() {
+    if(is.null(logg$summaryFile)) {
+      logg$summaryFile <<- paste(util$OutputPath(), "munger.log", sep = '/')
+    }
+    return(logg$summaryFile)
   }
 })
 
