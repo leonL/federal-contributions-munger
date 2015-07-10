@@ -3,8 +3,29 @@
 if(!exists("util")) { util <- list() }
 util <- within(util, {
 
+  SourcePath <- function() {
+    if(is.null(k$sourcePath)) {
+      k$sourcePath <<- paste(k$dataPath, 'source', sep = '/')
+    }
+    return(k$sourcePath)
+  }
+
+  OutputPath <- function() {
+    if(is.null(k$outputPath)) {
+      k$outputPath <<- paste(k$dataPath, 'output', sep = '/')
+    }
+    return(k$outputPath)
+  }
+
+  ContribsSrcPath <- function() {
+    if(is.null(k$contribsSrcPath)) {
+      k$contribsSrcPath <<- paste(SourcePath(), 'contributions', sep = '/')
+    }
+    return(k$contribsSrcPath)
+  }
+
   ReadSrcCSV <- function(filename, subfolder) {
-    file <- paste(k$SourcePath(), subfolder, filename, sep = '/')
+    file <- paste(SourcePath(), subfolder, filename, sep = '/')
     print(paste("Reading", file, "..."))
     csv <- read.csv(file, as.is=TRUE, encoding="UTF-8")
     return(csv)
@@ -20,7 +41,7 @@ util <- within(util, {
   }
 
   SaveCSV <- function(data, filename=k$AllDataFileName) {
-    file <- paste(k$OutputPath(), filename, sep = '/')
+    file <- paste(OutputPath(), filename, sep = '/')
     print(paste("Writing", file, "..."))
     write.csv(data, file=file, row.names=FALSE)
   }

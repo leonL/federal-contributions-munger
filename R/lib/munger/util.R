@@ -44,7 +44,7 @@ util <- within(util, {
     fileNamePrefix <- GetContributionsFileNamePrefix(partyTag)
 
     fileName <- paste(fileNamePrefix, year, 'csv', sep = '.')
-    src <- paste(k$ContribsSrcPath(), partyTag, fileName, sep = '/')
+    src <- paste(ContribsSrcPath(), partyTag, fileName, sep = '/')
 
     subset <- read.csv(src, header=FALSE, as.is=TRUE, encoding="UTF-8")
 

@@ -28,27 +28,6 @@ k <- within(k, {
   AllDataFileName <- "all_contributions.csv"
 
   dataPath <- "../data"
-
-  SourcePath <- function() {
-    if(is.null(k$sourcePath)) {
-      k$sourcePath <<- paste(k$dataPath, 'source', sep = '/')
-    }
-    return(k$sourcePath)
-  }
-
-  OutputPath <- function() {
-    if(is.null(k$outputPath)) {
-      k$outputPath <<- paste(k$dataPath, 'output', sep = '/')
-    }
-    return(k$outputPath)
-  }
-
-  ContribsSrcPath <- function() {
-    if(is.null(k$contribsSrcPath)) {
-      k$contribsSrcPath <<- paste(SourcePath(), 'contributions', sep = '/')
-    }
-    return(k$contribsSrcPath)
-  }
 })
 
 # Inline validation
@@ -79,7 +58,7 @@ logg <- within(logg, {
 
   SummaryFile <- function() {
     if(is.null(logg$summaryFile)) {
-      logg$summaryFile <<- paste(k$OutputPath(), "data_summary.log", sep = '/')
+      logg$summaryFile <<- paste(util$OutputPath(), "data_summary.log", sep = '/')
     }
     return(logg$summaryFile)
   }
