@@ -81,4 +81,16 @@ util <- within(util, {
     } else { test$Text('cache') }
     return(util$dedupedPostalCodeConcord)
   }
+
+  FindMatchingPostivieContrib <- function(negativeContrib, dataSet) {
+    matchContrib <- select(negativeContrib, -contrib.date) %>%
+                      mutate(contrib.amount = -contrib.amount)
+
+    matchDataSet <- select(dataSet, -contrib.date) %>%
+                      mutate(index = row.names(.))
+    matches <- merge(matchDataSet, matchContrib)
+
+    index <- ifelse(nrow(matches) > 0, matches[1, 'index'], NA)
+    return(index)
+  }
 })

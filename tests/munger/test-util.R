@@ -22,3 +22,27 @@ test_that("GetDedupedPostalConcordSet...", {
 
   expect_output(util$GetDedupedPostalConcordSet(), "cache")
 })
+
+test_that("FindMatchingPostivieContrib...", {
+  dataSet[1, c('contrib.date', 'year')] <- c('2004-06-01', '2004')
+  negContrib <- otherContrib <- dataSet[1,]
+  otherContrib$contrib.date <- '2004-07-01'
+  dataSet <- rbind(dataSet, otherContrib)
+  expect_equivalent(dataSet[nrow(dataSet),], otherContrib)
+
+  negContrib$contrib.amount <- -negContrib$contrib.amount
+  negContrib$contrib.date <- '2004-06-10'
+
+  # returns first positive contribution match (match on everything but contrib.date)
+  result <- util$FindMatchingPostivieContrib(negContrib, dataSet)
+  expect_equal(result, "1")
+
+  dataSet[1, 'year'] <- '2005'
+  result <- util$FindMatchingPostivieContrib(negContrib, dataSet)
+  expect_equal(result, "4")
+
+  # returns NA if there is no match
+  dataSet[4, 'year'] <- '2005'
+  result <- util$FindMatchingPostivieContrib(negContrib, dataSet)
+  expect_equal(result, NA)
+})
