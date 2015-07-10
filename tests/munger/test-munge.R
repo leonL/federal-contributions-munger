@@ -37,21 +37,21 @@ test_that("ContribAmounts...", {
 })
 
 test_that("FilterOutEstateContributions...", {
-  dataSet <- munge$FilterOutEstateContributions(dataSet, save.removedRows=FALSE)
+  dataSet <- munge$FilterOutEstateContributions(dataSet)
   expect_equal(nrow(dataSet), 1)
   expect_equal(as.character(dataSet[1, 'donor.name']), "Alex Van Halen")
 })
 
 test_that("FilterOutInvalidPostalCodes...", {
   dataSet$postal_code <- munge$PostalCodes(dataSet$postal_code)
-  dataSet <- munge$FilterOutInvalidPostalCodes(dataSet, save.removedRows=FALSE)
+  dataSet <- munge$FilterOutInvalidPostalCodes(dataSet)
   expect_equal(nrow(dataSet), 2)
   expect_equal(as.character(dataSet[1, 'postal_code']), "S0S0S0")
 })
 
 test_that("FilterOutFakePostalCodes...", {
   dataSet$postal_code <- munge$PostalCodes(dataSet$postal_code)
-  dataSet <- munge$FilterOutFakePostalCodes(dataSet, save.removedRows=FALSE)
+  dataSet <- munge$FilterOutFakePostalCodes(dataSet)
   expect_equal(nrow(dataSet), 2)
   expect_false("S0S0S0" %in% dataSet$postal_code)
 })

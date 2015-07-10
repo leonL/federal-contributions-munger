@@ -67,24 +67,24 @@ munge <- within(munge, {
     return(rowsWithValidPostal)
   }
 
-  FilterOutFakePostalCodes <- function(dataSet, save.removedRows=TRUE) {
+  FilterOutFakePostalCodes <- function(dataSet) {
     flog.info("Filtering out fake postal codes...")
     fakeCodes <- util$GetFakePostalVector()
     isFake <- dataSet$postal_code %in% fakeCodes
 
     rowsWithFakePostal <- filter(dataSet, isFake)
-    if(save.removedRows) {util$SaveCSV(rowsWithFakePostal, "unused_rows.fake_pcodes.csv")}
+    util$SaveCSV(rowsWithFakePostal, "unused_rows.fake_pcodes.csv")
 
     rowsWithRealPostalCodes <- filter(dataSet, !(isFake))
     return(rowsWithRealPostalCodes)
   }
 
-  FilterOutEstateContributions <- function(dataSet, save.removedRows=TRUE) {
+  FilterOutEstateContributions <- function(dataSet) {
     flog.info("Filtering out estate contributions...")
     isEstate <- grepl("estate", dataSet$donor.name, ignore.case = TRUE)
 
     estateContribs <- filter(dataSet, isEstate)
-    if(save.removedRows) {util$SaveCSV(estateContribs, "unused_rows.estate_contribs.csv")}
+    util$SaveCSV(estateContribs, "unused_rows.estate_contribs.csv")
 
     nonEstateContribs <- filter(dataSet, !isEstate)
     return(nonEstateContribs)
