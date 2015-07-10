@@ -56,12 +56,12 @@ munge <- within(munge, {
     return(dataSet)
   }
 
-  FilterOutInvalidPostalCodes <- function(dataSet, save.removedRows=TRUE) {
+  FilterOutInvalidPostalCodes <- function(dataSet) {
     flog.info("Filtering out invalid postal codes...")
     validCodes <- grepl(k$PostalCodeRegex, dataSet$postal_code)
 
     rowsWithInvalidPostal <- filter(dataSet, !validCodes)
-    if(save.removedRows) {util$SaveCSV(rowsWithInvalidPostal, "unused_rows.invalid_pcodes.csv")}
+    util$SaveUnusableCSV(rowsWithInvalidPostal, "invalid_pcodes.csv")
 
     rowsWithValidPostal <- filter(dataSet, validCodes)
     return(rowsWithValidPostal)
@@ -73,7 +73,7 @@ munge <- within(munge, {
     isFake <- dataSet$postal_code %in% fakeCodes
 
     rowsWithFakePostal <- filter(dataSet, isFake)
-    util$SaveCSV(rowsWithFakePostal, "unused_rows.fake_pcodes.csv")
+    util$SaveUnusableCSV(rowsWithFakePostal, "fake_pcodes.csv")
 
     rowsWithRealPostalCodes <- filter(dataSet, !(isFake))
     return(rowsWithRealPostalCodes)
@@ -84,7 +84,7 @@ munge <- within(munge, {
     isEstate <- grepl("estate", dataSet$donor.name, ignore.case = TRUE)
 
     estateContribs <- filter(dataSet, isEstate)
-    util$SaveCSV(estateContribs, "unused_rows.estate_contribs.csv")
+    util$SaveUnusableCSV(estateContribs, "estate_contribs.csv")
 
     nonEstateContribs <- filter(dataSet, !isEstate)
     return(nonEstateContribs)
@@ -95,7 +95,7 @@ munge <- within(munge, {
     isZero <- dataSet$contrib.amount == 0
 
     zeroContribs <- filter(dataSet, isZero)
-    util$SaveCSV(zeroContribs, "unused_rows.zero_contribs.csv")
+    util$SaveUnusableCSV(zeroContribs, "zero_contribs.csv")
 
     nonZeroContribs <- filter(dataSet, !isZero)
     return(nonZeroContribs)
@@ -110,7 +110,7 @@ munge <- within(munge, {
                       na.omit %>% as.integer
 
     filteredOutData <- dataSet[filterIndex, ]
-    util$SaveCSV(filteredOutData, "unused_rows.negative_contribs.csv")
+    util$SaveUnusableCSV(filteredOutData, "negative_contribs.csv")
 
     filteredData <- dataSet[-filterIndex,]
     return(filteredData)

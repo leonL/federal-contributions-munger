@@ -40,10 +40,18 @@ util <- within(util, {
     ReadSrcCSV(filename, "ridings")
   }
 
-  SaveCSV <- function(data, filename=k$AllDataFileName) {
-    file <- paste(OutputPath(), filename, sep = '/')
+  SaveCSV <- function(data, filename=k$AllDataFileName, subfolder="") {
+    file <- paste(OutputPath(), subfolder, filename, sep = '/')
     print(paste("Writing", file, "..."))
     write.csv(data, file=file, row.names=FALSE)
+  }
+
+  SaveUnusableCSV <- function(data, filename) {
+    SaveCSV(data, filename, 'unusable_rows')
+  }
+
+  SaveContributionsCSV <- function(data, filename) {
+    SaveCSV(data, filename, 'contributions')
   }
 
   FormatNum <- function(n) {
