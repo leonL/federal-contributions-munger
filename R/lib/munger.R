@@ -25,8 +25,8 @@ k <- within(k, {
     "^[ABCEGHJKLMNPRSTVXY]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}$"
 })
 
-# Inline validations ... Used to validate SENSITIVE data transformations in
-# production so that badly corrupted data does not slip through (more general
+# Validations ... for validating the success of SENSITIVE data transformations
+# in production so that badly corrupted data does not slip through (more general
 # transformations are validated by unit tests)
 
 if(!exists("validate")) { validate <- list() }

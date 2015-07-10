@@ -82,15 +82,36 @@ util <- within(util, {
     return(util$dedupedPostalCodeConcord)
   }
 
-  FindMatchingPostivieContrib <- function(negativeContrib, dataSet) {
-    matchContrib <- select(negativeContrib, -contrib.date) %>%
-                      mutate(contrib.amount = -contrib.amount)
+  MatchingPostivieContribIndices <- function(negativeContribs, dataSet) {
+    matchContribSet <-
+      if(!is.null(negativeContribs$contrib.date)) {
+        select(negativeContribs, -contrib.date)
+      } else {
+        negativeContribs
+      }
+
+    matchContribSet$contrib.amount = abs(matchContribSet$contrib.amount)
 
     matchDataSet <- select(dataSet, -contrib.date) %>%
-                      mutate(index = row.names(.))
-    matches <- merge(matchDataSet, matchContrib)
+                      mutate(index = as.integer(row.names(.)))
 
-    index <- ifelse(nrow(matches) > 0, matches[1, 'index'], NA)
-    return(index)
+    matches <- merge(matchDataSet, matchContribSet)
+    matchesNoIndexCol <- select(matches, -index)
+    uniqueMatches <- filter(matches, !duplicated(matchesNoIndexCol))
+
+    indices <- as.vector(uniqueMatches$index)
+
+    # any negativeContribs that seem like duplicates once the contrib.date
+    # col has been removed need to be handled recursively because all their
+    # positive matches will also be duplicates and so removed from the result
+    if(anyDuplicated(matchContribSet)) {
+      isDuplicate <- duplicated(matchContribSet)
+      duplicateMatchContribs <- filter(matchContribSet, isDuplicate)
+      dataSubSet <- dataSet[-indices, ]
+      indices <- c(indices,
+        util$MatchingPostivieContribIndices(duplicateMatchContribs, dataSubSet))
+    }
+
+    return(indices)
   }
 })

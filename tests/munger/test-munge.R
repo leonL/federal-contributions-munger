@@ -63,6 +63,17 @@ test_that("FilterOutZeroValues removes records with amount of $0", {
   expect_equal(result$contrib.amount, 0.10)
 })
 
+test_that("FilterOutNegativeContribs removes negative contribs and corresponding records", {
+  dataSet$contrib.amount <- c(10.10, 20.99, 0.01)
+  dataSetCopy <- mutate(dataSet, contrib.amount = -contrib.amount)
+  dataSetCopy$year[1] <- 2011
+  dataSetCopy$party[2] <- "Green"
+  dataSet <- rbind(dataSet, dataSetCopy)
+  expect_equal(nrow(dataSet), 6)
+  result <- munge$FilterOutNegativeContribs(dataSet)
+  expect_equivalent(result, dataSet[c(1,2),])
+})
+
 test_that('NormalizeRidingNames...', {
   data <- util$ReadSrcCSV('ready_to_normalize_riding_name.csv', 'contributions')
   expect_equal(data$party_riding, "York--Simcoe Conservative Association")

@@ -51,7 +51,8 @@ munge <- within(munge, {
     dataSet <- FilterOutInvalidPostalCodes(dataSet) %>%
                 FilterOutFakePostalCodes() %>%
                   FilterOutEstateContributions() %>%
-                    FilterOutZeroValues()
+                    FilterOutZeroValues() %>%
+                      FilterOutNegativeContribs()
     return(dataSet)
   }
 
@@ -98,6 +99,21 @@ munge <- within(munge, {
 
     nonZeroContribs <- filter(dataSet, !isZero)
     return(nonZeroContribs)
+  }
+
+  FilterOutNegativeContribs <- function(dataSet) {
+    flog.info("Filtering out negative contributions and coresponding records...")
+    negativeContribsIndex <- which(dataSet$contrib.amount < 0)
+    negativeContribs <- dataSet[negativeContribsIndex, ]
+    positiveMatchIndex <- util$MatchingPostivieContribIndices(negativeContribs, dataSet)
+    filterIndex <- c(negativeContribsIndex, positiveMatchIndex) %>%
+                      na.omit %>% as.integer
+
+    filteredOutData <- dataSet[filterIndex, ]
+    util$SaveCSV(filteredOutData, "unused_rows.negative_contribs.csv")
+
+    filteredData <- dataSet[-filterIndex,]
+    return(filteredData)
   }
 
   NormalizeRidingNames <- function(dataSet) {

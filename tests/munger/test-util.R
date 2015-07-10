@@ -23,7 +23,7 @@ test_that("GetDedupedPostalConcordSet...", {
   expect_output(util$GetDedupedPostalConcordSet(), "cache")
 })
 
-test_that("FindMatchingPostivieContrib...", {
+test_that("MatchingPostivieContribIndices...", {
   dataSet[1, c('contrib.date', 'year')] <- c('2004-06-01', '2004')
   negContrib <- otherContrib <- dataSet[1,]
   otherContrib$contrib.date <- '2004-07-01'
@@ -33,16 +33,19 @@ test_that("FindMatchingPostivieContrib...", {
   negContrib$contrib.amount <- -negContrib$contrib.amount
   negContrib$contrib.date <- '2004-06-10'
 
-  # returns first positive contribution match (match on everything but contrib.date)
-  result <- util$FindMatchingPostivieContrib(negContrib, dataSet)
-  expect_equal(result, "1")
+  # returns at most one match for every negative contrib
+  result <- util$MatchingPostivieContribIndices(negContrib, dataSet)
+  expect_equal(result, 1)
 
-  dataSet[1, 'year'] <- '2005'
-  result <- util$FindMatchingPostivieContrib(negContrib, dataSet)
-  expect_equal(result, "4")
+  # does not conflate 'duplicated' negative contrib records
+  otherNegContrib <- negContrib; otherNegContrib$contrib.date <- '2004-07-10'
+  negContribs <- rbind(negContrib, otherNegContrib)
+  result <- util$MatchingPostivieContribIndices(negContribs, dataSet)
+  expect_equal(result, c(1, 4))
 
-  # returns NA if there is no match
-  dataSet[4, 'year'] <- '2005'
-  result <- util$FindMatchingPostivieContrib(negContrib, dataSet)
-  expect_equal(result, NA)
+
+  # returns empty vector if no matches found
+  dataSet[c(1,4), 'year'] <- '2005'
+  result <- util$MatchingPostivieContribIndices(negContrib, dataSet)
+  expect_equal(result, numeric())
 })
