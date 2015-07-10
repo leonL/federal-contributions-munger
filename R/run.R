@@ -20,3 +20,6 @@ dataSet <- munge$NormalizeRidingNames(dataSet)
 
 # add city, provice, contributor.riding, and geolocation columns based on postal code
 dataSet <- munge$MergeWithPCodeConcordance(dataSet)
+
+# save munged data to CSV
+util$FinalContribOrderAndSort(dataSet) %>% util$SaveContributionsCSV()

@@ -112,4 +112,14 @@ util <- within(util, {
 
     return(indices)
   }
+
+  FinalContribOrderAndSort <- function(dataSet) {
+    dataSet <- select(
+      dataSet, party, target.riding_name, contrib.date, contrib.amount,
+      donor.name, postal_code, contributor.riding_name, city, province,
+      pcode.latitude, pcode.longitude, contrib.year, donee.riding_level,
+      target.riding_id, contributor.riding_id
+    ) %>% arrange(contrib.date)
+    dataSet
+  }
 })

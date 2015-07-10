@@ -40,9 +40,9 @@ util <- within(util, {
     ReadSrcCSV(filename, "ridings")
   }
 
-  SaveCSV <- function(data, filename=k$AllDataFileName, subfolder="") {
+  SaveCSV <- function(data, filename, subfolder="") {
     file <- paste(OutputPath(), subfolder, filename, sep = '/')
-    print(paste("Writing", file, "..."))
+    flog.info("Writing %s", file)
     write.csv(data, file=file, row.names=FALSE)
   }
 
@@ -50,8 +50,9 @@ util <- within(util, {
     SaveCSV(data, filename, 'unusable_rows')
   }
 
-  SaveContributionsCSV <- function(data, filename) {
+  SaveContributionsCSV <- function(data, filename=k$AllDataFileName) {
     SaveCSV(data, filename, 'contributions')
+    logg$SummaryInfo("Saved %s rows to %s", util$FormatNum(nrow(data)), filename)
   }
 
   FormatNum <- function(n) {
