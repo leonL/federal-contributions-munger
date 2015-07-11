@@ -41,9 +41,11 @@ util <- within(util, {
   }
 
   SaveCSV <- function(data, filename, subfolder="") {
-    file <- paste(OutputPath(), subfolder, filename, sep = '/')
-    flog.info("Writing %s", file)
-    write.csv(data, file=file, row.names=FALSE)
+    path <- paste(OutputPath(), subfolder, sep = '/')
+    dir.create(path, showWarnings=FALSE)
+    filepath <- paste(path, filename, sep='/')
+    flog.info("Writing %s", filepath)
+    write.csv(data, file=filepath, row.names=FALSE)
   }
 
   SaveUnusableCSV <- function(data, filename) {

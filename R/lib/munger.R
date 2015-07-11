@@ -5,7 +5,7 @@ source('munger/util.R')
 library(stringr, quietly=TRUE, warn.conflicts=FALSE)
 library(dplyr, quietly=TRUE, warn.conflicts=FALSE)
 
-# Constants
+# Constants and Configuration
 
 if(!exists("k")) { k <- list() }
 k <- within(k, {
@@ -23,6 +23,9 @@ k <- within(k, {
 
   PostalCodeRegex <-
     "^[ABCEGHJKLMNPRSTVXY]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}[ABCEGHJKLMNPRSTVWXYZ]{1}[[:digit:]]{1}$"
+
+  saveContribsByPartyYearCSV <- TRUE
+  saveAllContribsToOneCSV <- TRUE
 })
 
 # Validations ... for validating the success of SENSITIVE data transformations
