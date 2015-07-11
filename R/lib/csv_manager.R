@@ -10,6 +10,7 @@ util <- within(util, {
   ShardContributionsByPartyYear <- function(dataSet) {
     allParties <- AllLevels(dataSet$party)
     allYears <- AllLevels(dataSet$contrib.year) %>% as.integer()
+    rowCounts <- data.frame()
 
     for(partyTag in allParties) {
       for(year in allYears) {
@@ -17,9 +18,13 @@ util <- within(util, {
         if(nrow(subset) > 0) {
           SaveContributionsByPartyYearCSV(subset,
                       GetContributionsFileNamePrefix(partyTag), year, partyTag)
+          rowCounts <- rbind(rowCounts,
+            data.frame(party=partyTag, year=year, nrow=nrow(subset)))
         }
       }
     }
+    # stop execuition if the compiled data set does not contain all the source csv rows
+    validate$AllSubsetRowsAccountedFor(nrow(dataSet), rowCounts$n)
   }
 
   SaveContributionsByPartyYearCSV <- function(data, partyName, year, subfolder) {

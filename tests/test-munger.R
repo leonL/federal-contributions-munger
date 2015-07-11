@@ -6,15 +6,7 @@ source('munger/test-util.R')
 
 context("Inline Validators")
 
-test_that("validate$AllSubsetRowsAccountedFor...", {
-  setCount <- 100
-  validSubsetCounts <- c(30, 20, 50)
-  invalidSubsetCounts <- c(10, 40, 66)
-  expect_true(validate$AllSubsetRowsAccountedFor(setCount, validSubsetCounts))
-  expect_error(validate$AllSubsetRowsAccountedFor(setCount, invalidSubsetCounts))
-})
-
-test_that("validate$AllRidingsNormalized...", {
+test_that("AllRidingsNormalized...", {
   ids <- c(1,2,3)
   expect_true(validate$AllRidingsNormalized(ids))
   ids[4] <- NA

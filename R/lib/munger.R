@@ -35,12 +35,6 @@ k <- within(k, {
 if(!exists("validate")) { validate <- list() }
 validate <- within(validate, {
 
-  AllSubsetRowsAccountedFor <- function(setRowCount, sourceRowCounts) {
-    subsetRowCount <- sum(sourceRowCounts)
-    Base(setRowCount == subsetRowCount,
-      errorMsgs$UnaccountedForSubsetRows(subsetRowCount, setRowCount))
-  }
-
   AllRidingsNormalized <- function(ridingIds) {
     nRowsNotNormalized <- length(which(is.na(ridingIds)))
     IsNotNA(ridingIds, errorMsgs$UnknownRidings(nRowsNotNormalized))

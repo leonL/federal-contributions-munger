@@ -47,6 +47,26 @@ validate <- within(validate, {
   IsNotNA <- function(vec, errogMsg) {
     Base(!any(is.na(vec)), errogMsg)
   }
+
+  AllSubsetRowsAccountedFor <- function(setRowCount, sourceRowCounts) {
+    subsetRowCount <- sum(sourceRowCounts)
+    Base(setRowCount == subsetRowCount,
+      errorMsgs$UnaccountedForSubsetRows(subsetRowCount, setRowCount))
+  }
+})
+
+# Error Messages
+
+if(!exists("errorMsgs")) { errorMsgs <- list() }
+errorMsgs <- within(errorMsgs, {
+
+  UnaccountedForSubsetRows <- function(subsetN, dataSetN) {
+    paste("There's a discrepancy between the data set and total subset row counts.\n",
+          "All the subset rows summed:", subsetN, "\n",
+          "Data set row count:", dataSetN, "\n",
+          "Difference:", abs(subsetN - dataSetN)
+    )
+  }
 })
 
 # Logging...
