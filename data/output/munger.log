@@ -1,0 +1,132 @@
+INFO [2015-07-10 20:37:56]
+
+Munging initiated...
+
+INFO [2015-07-10 20:37:57] Read 3,225 records from Bloc Québécois.2004.csv
+INFO [2015-07-10 20:37:57] Read 3,210 records from Bloc Québécois.2005.csv
+INFO [2015-07-10 20:37:57] Read 2,539 records from Bloc Québécois.2006.csv
+INFO [2015-07-10 20:37:57] Read 2,375 records from Bloc Québécois.2007.csv
+INFO [2015-07-10 20:37:57] Read 2,716 records from Bloc Québécois.2008.csv
+INFO [2015-07-10 20:37:57] Read 2,660 records from Bloc Québécois.2009.csv
+INFO [2015-07-10 20:37:57] Read 2,664 records from Bloc Québécois.2010.csv
+INFO [2015-07-10 20:37:57] Read 2,557 records from Bloc Québécois.2011.csv
+INFO [2015-07-10 20:37:57] Read 1,163 records from Bloc Québécois.2012.csv
+INFO [2015-07-10 20:37:57] Read 1,087 records from Bloc Québécois.2013.csv
+INFO [2015-07-10 20:37:57] Read 435 records from Bloc Québécois.2014.csv
+INFO [2015-07-10 20:37:57] Read 79 records from Bloc Québécois.2015.csv
+INFO [2015-07-10 20:37:58] Read 39,673 records from Conservative Party.2004.csv
+INFO [2015-07-10 20:37:59] Read 73,195 records from Conservative Party.2005.csv
+INFO [2015-07-10 20:38:01] Read 67,309 records from Conservative Party.2006.csv
+INFO [2015-07-10 20:38:02] Read 65,633 records from Conservative Party.2007.csv
+INFO [2015-07-10 20:38:04] Read 92,411 records from Conservative Party.2008.csv
+INFO [2015-07-10 20:38:06] Read 79,118 records from Conservative Party.2009.csv
+INFO [2015-07-10 20:38:07] Read 76,696 records from Conservative Party.2010.csv
+INFO [2015-07-10 20:38:10] Read 97,495 records from Conservative Party.2011.csv
+INFO [2015-07-10 20:38:11] Read 78,800 records from Conservative Party.2012.csv
+INFO [2015-07-10 20:38:13] Read 82,964 records from Conservative Party.2013.csv
+INFO [2015-07-10 20:38:15] Read 27,693 records from Conservative Party.2014.csv
+INFO [2015-07-10 20:38:15] Read 7,494 records from Conservative Party.2015.csv
+INFO [2015-07-10 20:38:16] Read 1,077 records from Green Party.2004.csv
+INFO [2015-07-10 20:38:16] Read 1,584 records from Green Party.2005.csv
+INFO [2015-07-10 20:38:17] Read 2,761 records from Green Party.2006.csv
+INFO [2015-07-10 20:38:17] Read 3,156 records from Green Party.2007.csv
+INFO [2015-07-10 20:38:18] Read 6,009 records from Green Party.2008.csv
+INFO [2015-07-10 20:38:18] Read 8,031 records from Green Party.2009.csv
+INFO [2015-07-10 20:38:19] Read 8,566 records from Green Party.2010.csv
+INFO [2015-07-10 20:38:19] Read 10,986 records from Green Party.2011.csv
+INFO [2015-07-10 20:38:20] Read 16,925 records from Green Party.2012.csv
+INFO [2015-07-10 20:38:21] Read 19,404 records from Green Party.2013.csv
+INFO [2015-07-10 20:38:21] Read 4,063 records from Green Party.2014.csv
+INFO [2015-07-10 20:38:22] Read 744 records from Green Party.2015.csv
+INFO [2015-07-10 20:38:23] Read 12,620 records from Liberal Party.2004.csv
+INFO [2015-07-10 20:38:24] Read 17,681 records from Liberal Party.2005.csv
+INFO [2015-07-10 20:38:24] Read 17,818 records from Liberal Party.2006.csv
+INFO [2015-07-10 20:38:26] Read 16,063 records from Liberal Party.2007.csv
+INFO [2015-07-10 20:38:27] Read 24,099 records from Liberal Party.2008.csv
+INFO [2015-07-10 20:38:28] Read 25,830 records from Liberal Party.2009.csv
+INFO [2015-07-10 20:38:29] Read 21,455 records from Liberal Party.2010.csv
+INFO [2015-07-10 20:38:30] Read 37,734 records from Liberal Party.2011.csv
+INFO [2015-07-10 20:38:31] Read 26,179 records from Liberal Party.2012.csv
+INFO [2015-07-10 20:38:33] Read 36,438 records from Liberal Party.2013.csv
+INFO [2015-07-10 20:38:34] Read 45,268 records from Liberal Party.2014.csv
+INFO [2015-07-10 20:38:35] Read 9,504 records from Liberal Party.2015.csv
+INFO [2015-07-10 20:38:36] Read 37,335 records from New Democratic Party.2004.csv
+INFO [2015-07-10 20:38:38] Read 43,818 records from New Democratic Party.2005.csv
+INFO [2015-07-10 20:38:39] Read 38,813 records from New Democratic Party.2006.csv
+INFO [2015-07-10 20:38:41] Read 46,120 records from New Democratic Party.2007.csv
+INFO [2015-07-10 20:38:43] Read 58,239 records from New Democratic Party.2008.csv
+INFO [2015-07-10 20:38:45] Read 47,577 records from New Democratic Party.2009.csv
+INFO [2015-07-10 20:38:47] Read 52,349 records from New Democratic Party.2010.csv
+INFO [2015-07-10 20:38:49] Read 72,967 records from New Democratic Party.2011.csv
+INFO [2015-07-10 20:38:51] Read 73,873 records from New Democratic Party.2012.csv
+INFO [2015-07-10 20:38:54] Read 72,273 records from New Democratic Party.2013.csv
+INFO [2015-07-10 20:38:55] Read 17,895 records from New Democratic Party.2014.csv
+INFO [2015-07-10 20:38:56] Read 5,323 records from New Democratic Party.2015.csv
+INFO [2015-07-10 20:38:57] 1,753,768 records sourced in all
+INFO [2015-07-10 20:39:08] Filtered out 5,349 unsuable rows: invalid postal codes
+INFO [2015-07-10 20:39:08] Filtered out 2,470 unsuable rows: fake postal codes
+INFO [2015-07-10 20:39:10] Filtered out 100 unsuable rows: estate contributions
+INFO [2015-07-10 20:39:10] Filtered out 288 unsuable rows: zero or no contribution amount
+INFO [2015-07-10 20:39:23] Filtered out 213 unsuable rows: negative and matching positive contributions
+INFO [2015-07-10 20:39:24] Filtered out 8,420 unsuable rows total
+INFO [2015-07-10 20:40:35] Saved 3,667 rows to Bloc Québécois.2004.csv
+INFO [2015-07-10 20:40:35] Saved 4,016 rows to Bloc Québécois.2005.csv
+INFO [2015-07-10 20:40:35] Saved 3,357 rows to Bloc Québécois.2006.csv
+INFO [2015-07-10 20:40:35] Saved 3,211 rows to Bloc Québécois.2007.csv
+INFO [2015-07-10 20:40:36] Saved 3,539 rows to Bloc Québécois.2008.csv
+INFO [2015-07-10 20:40:36] Saved 3,484 rows to Bloc Québécois.2009.csv
+INFO [2015-07-10 20:40:36] Saved 3,406 rows to Bloc Québécois.2010.csv
+INFO [2015-07-10 20:40:36] Saved 2,990 rows to Bloc Québécois.2011.csv
+INFO [2015-07-10 20:40:37] Saved 1,262 rows to Bloc Québécois.2012.csv
+INFO [2015-07-10 20:40:37] Saved 1,161 rows to Bloc Québécois.2013.csv
+INFO [2015-07-10 20:40:37] Saved 422 rows to Bloc Québécois.2014.csv
+INFO [2015-07-10 20:40:37] Saved 77 rows to Bloc Québécois.2015.csv
+INFO [2015-07-10 20:40:38] Saved 36,377 rows to Conservative Party.2004.csv
+INFO [2015-07-10 20:40:39] Saved 69,538 rows to Conservative Party.2005.csv
+INFO [2015-07-10 20:40:39] Saved 63,765 rows to Conservative Party.2006.csv
+INFO [2015-07-10 20:40:40] Saved 67,077 rows to Conservative Party.2007.csv
+INFO [2015-07-10 20:40:41] Saved 91,880 rows to Conservative Party.2008.csv
+INFO [2015-07-10 20:40:42] Saved 76,322 rows to Conservative Party.2009.csv
+INFO [2015-07-10 20:40:43] Saved 76,179 rows to Conservative Party.2010.csv
+INFO [2015-07-10 20:40:44] Saved 97,063 rows to Conservative Party.2011.csv
+INFO [2015-07-10 20:40:45] Saved 79,114 rows to Conservative Party.2012.csv
+INFO [2015-07-10 20:40:46] Saved 81,831 rows to Conservative Party.2013.csv
+INFO [2015-07-10 20:40:47] Saved 26,396 rows to Conservative Party.2014.csv
+INFO [2015-07-10 20:40:47] Saved 7,014 rows to Conservative Party.2015.csv
+INFO [2015-07-10 20:40:47] Saved 1,220 rows to Green Party.2004.csv
+INFO [2015-07-10 20:40:47] Saved 1,646 rows to Green Party.2005.csv
+INFO [2015-07-10 20:40:48] Saved 2,876 rows to Green Party.2006.csv
+INFO [2015-07-10 20:40:48] Saved 3,420 rows to Green Party.2007.csv
+INFO [2015-07-10 20:40:48] Saved 6,349 rows to Green Party.2008.csv
+INFO [2015-07-10 20:40:48] Saved 7,883 rows to Green Party.2009.csv
+INFO [2015-07-10 20:40:49] Saved 8,349 rows to Green Party.2010.csv
+INFO [2015-07-10 20:40:49] Saved 10,260 rows to Green Party.2011.csv
+INFO [2015-07-10 20:40:49] Saved 15,665 rows to Green Party.2012.csv
+INFO [2015-07-10 20:40:50] Saved 17,185 rows to Green Party.2013.csv
+INFO [2015-07-10 20:40:50] Saved 3,768 rows to Green Party.2014.csv
+INFO [2015-07-10 20:40:50] Saved 690 rows to Green Party.2015.csv
+INFO [2015-07-10 20:40:50] Saved 13,513 rows to Liberal Party.2004.csv
+INFO [2015-07-10 20:40:51] Saved 18,632 rows to Liberal Party.2005.csv
+INFO [2015-07-10 20:40:51] Saved 17,778 rows to Liberal Party.2006.csv
+INFO [2015-07-10 20:40:51] Saved 18,183 rows to Liberal Party.2007.csv
+INFO [2015-07-10 20:40:52] Saved 28,066 rows to Liberal Party.2008.csv
+INFO [2015-07-10 20:40:52] Saved 28,003 rows to Liberal Party.2009.csv
+INFO [2015-07-10 20:40:53] Saved 24,758 rows to Liberal Party.2010.csv
+INFO [2015-07-10 20:40:53] Saved 41,370 rows to Liberal Party.2011.csv
+INFO [2015-07-10 20:40:54] Saved 26,998 rows to Liberal Party.2012.csv
+INFO [2015-07-10 20:40:54] Saved 35,776 rows to Liberal Party.2013.csv
+INFO [2015-07-10 20:40:55] Saved 41,221 rows to Liberal Party.2014.csv
+INFO [2015-07-10 20:40:55] Saved 8,473 rows to Liberal Party.2015.csv
+INFO [2015-07-10 20:40:56] Saved 38,705 rows to New Democratic Party.2004.csv
+INFO [2015-07-10 20:40:56] Saved 44,160 rows to New Democratic Party.2005.csv
+INFO [2015-07-10 20:40:57] Saved 38,785 rows to New Democratic Party.2006.csv
+INFO [2015-07-10 20:40:57] Saved 45,952 rows to New Democratic Party.2007.csv
+INFO [2015-07-10 20:40:58] Saved 58,275 rows to New Democratic Party.2008.csv
+INFO [2015-07-10 20:40:59] Saved 46,805 rows to New Democratic Party.2009.csv
+INFO [2015-07-10 20:40:59] Saved 52,995 rows to New Democratic Party.2010.csv
+INFO [2015-07-10 20:41:00] Saved 71,949 rows to New Democratic Party.2011.csv
+INFO [2015-07-10 20:41:01] Saved 71,269 rows to New Democratic Party.2012.csv
+INFO [2015-07-10 20:41:02] Saved 69,651 rows to New Democratic Party.2013.csv
+INFO [2015-07-10 20:41:02] Saved 16,706 rows to New Democratic Party.2014.csv
+INFO [2015-07-10 20:41:02] Saved 4,866 rows to New Democratic Party.2015.csv
+INFO [2015-07-10 20:41:17] Saved 1,745,348 rows to all_contributions.csv
