@@ -141,7 +141,9 @@ munge <- within(munge, {
     ridingSpecificMergeSuccess$contributor.riding_id <-
                                   ridingSpecificMergeSuccess$target.riding_id
 
-    ridingSpecificMergeFailure <- filter(dataSet, !recordHasRidingSpecificConcord)
+    ridingSpecificMergeFailure <-
+      filter(ridingSpecificMergeResult, !recordHasRidingSpecificConcord) %>%
+        select(-contributor.riding_name, -pcode.latitude, -pcode.longitude, -city, -province)
     flog.info(
       "Merging in postal code concordance cols for %s remaining records...",
        nrow(ridingSpecificMergeFailure)
