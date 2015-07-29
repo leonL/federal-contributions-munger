@@ -10,25 +10,26 @@ class ConcordanceWriter
 
   def initialize
     @concordance = CSV.open(
-      'data/output/postal_code_geo_concordance.csv', 'a', {quote_char: '"', force_quotes: true}
+      'postal_code_riding_geo_concordance.csv', 'a', {quote_char: '"', force_quotes: true}
     )
 
-    @invalid_codes = CSV.open(
-      'data/output/invalid_postal_codes.csv', 'a', {quote_char: '"', force_quotes: true}
+    @fake_codes = CSV.open(
+      'fake_postal_codes.csv', 'a', {quote_char: '"', force_quotes: true}
     )
   end
 
   def fetch_data_and_write_csv
     csv_params = {headers: true, header_converters: :symbol,
       converters: :na_to_nil}
+    unknownCodesFile = 'unknown_postal_codes.csv'
 
-    CSV.foreach(
-      'data/src/postal_codes.csv', csv_params) do |record|
-
+    unknownCodes = CSV.table(unknownCodesFile, csv_params)
+    until unknownCodes.count == 0 do
+      record = unknownCodes.first
       concordance = fetch_data_for_postal_code(record[:postal_code])
       if concordance.not_found?
         puts "It seems that #{record[:postal_code]} is NOT a valid postal code."
-        @invalid_codes << [record[:postal_code]]
+        @fake_codes << [record[:postal_code]]
       else
         concordance.ridings.each do |riding|
           row = complete_record(record, riding, concordance)
@@ -36,8 +37,14 @@ class ConcordanceWriter
           @concordance << row
         end
       end
+
+      unknownCodes.delete(0)
+
+      File.open(unknownCodesFile, 'w') do |f|
+        f.write(unknownCodes)
+      end
     end
-    @invalid_codes.close; @concordance.close
+    @fake_codes.close; @concordance.close
   end
 
 private
