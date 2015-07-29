@@ -20,7 +20,7 @@ k <- within(k, {
 
   PartyLabels <- data.frame(name=PartyNames, filePrefix=FileNamePrefix, row.names=PartyTags, stringsAsFactors=FALSE)
 
-  AllContribYears <- as.character(c(2004:2015))
+  AllContribYears <- as.character(c(2004:2014))
 
   ProviceLevels <-
     c("AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT", NA)
