@@ -57,6 +57,14 @@ util <- within(util, {
     logg$SummaryInfo("Saved %s rows to %s", util$FormatNum(nrow(data)), filename)
   }
 
+  SaveUnknownPostalCodesCSV <- function(codes) {
+    file <- paste(SourcePath(), 'postal_codes/unknown_postal_codes.csv', sep = '/')
+    flog.info("Writing %s", file)
+    codes <- as.data.frame(codes)
+    names(codes) <- 'postal_code'
+    write.csv(codes, file=file, row.names=FALSE)
+  }
+
   FormatNum <- function(n) {
     format(n, big.mark = ',')
   }

@@ -42,7 +42,6 @@ validate <- within(validate, {
 
   AllPostalCodesMerged <- function(data, mergedData) {
     Base(nrow(data) == nrow(mergedData), "Postal Code Concordance merger dropped some rows!")
-    IsNotNA(mergedData$contributor.riding_id, errorMsgs$UnknownPostalCodes())
   }
 })
 

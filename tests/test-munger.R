@@ -18,6 +18,4 @@ test_that("AllPostalCodesMerged", {
   dataSet$contributor.riding_id <- 10001
   expect_true(validate$AllPostalCodesMerged(dataSet, dataSet))
   expect_error(validate$AllPostalCodesMerged(dataSet, data.frame()))
-  dataSet$contributor.riding_id <- NA
-  expect_error(validate$AllPostalCodesMerged(dataSet, dataSet))
 })

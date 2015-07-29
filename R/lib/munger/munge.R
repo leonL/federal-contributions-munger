@@ -149,9 +149,17 @@ munge <- within(munge, {
        nrow(ridingSpecificMergeFailure)
     )
     dedupedMergeResut <-
-      merge(ridingSpecificMergeFailure, util$GetDedupedPostalConcordSet())
+      merge(ridingSpecificMergeFailure, util$GetDedupedPostalConcordSet(), all.x=TRUE)
 
     dataSetMerged <- rbind(ridingSpecificMergeSuccess, dedupedMergeResut)
+    isUnknownPostal <- is.na(dataSetMerged$contributor.riding_id)
+
+    if(any(isUnknownPostal)) {
+      unknownCodes <- unique(dataSetMerged$postal_code[isUnknownPostal])
+      util$SaveUnknownPostalCodesCSV(unknownCodes)
+      validate$Base(FALSE, errorMsgs$UnknownPostalCodes())
+    }
+
     validate$AllPostalCodesMerged(dataSet, dataSetMerged)
 
     return(dataSetMerged)
