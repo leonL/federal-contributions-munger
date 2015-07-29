@@ -76,7 +76,7 @@ if(!exists("logg")) { logg <- list() }
 logg <- within(logg, {
 
   UnusableRows <- function(reason, nRows) {
-    SummaryInfo("Filtered out %s unsuable rows: %s", util$FormatNum(nRows), reason)
+    SummaryInfo("Filtered out %s unusable rows: %s", util$FormatNum(nRows), reason)
   }
 
 })

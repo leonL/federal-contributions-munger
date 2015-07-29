@@ -54,7 +54,7 @@ munge <- within(munge, {
                     FilterOutZeroValues() %>%
                       FilterOutNegativeContribs()
     nRowsAfter <- nrow(dataSet)
-    logg$SummaryInfo("Filtered out %s unsuable rows total",
+    logg$SummaryInfo("Filtered out %s unusable rows total",
                     util$FormatNum(nRowsBefore - nRowsAfter))
     return(dataSet)
   }
