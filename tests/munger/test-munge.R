@@ -15,8 +15,9 @@ test_that("DoneeCols...", {
 test_that("DateCols...", {
   currentYear <- "2007"
   dataSet <- munge$DateCols(dataSet, currentYear)
-  expect_equal(dataSet[1, 'contrib.date'], "2007-06-05")
+  expect_equal(dataSet[1, 'contrib.date'], as.Date("2007-06-05"))
   expect_equal(dataSet[1, 'contrib.year'], currentYear)
+  expect_true(is.na(dataSet[3, 'contrib.date']))
 })
 
 test_that("DonorNames...", {

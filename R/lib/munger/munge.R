@@ -24,7 +24,8 @@ munge <- within(munge, {
   DateCols <- function(dataSet, currentYear) {
     dataSet <- within(dataSet, {
       contrib.date <- as.Date(str_trim(contrib.date), format="%b %d, %Y")
-      contrib.date <- paste(currentYear, strftime(contrib.date, "%m-%d"), sep='-')
+      contrib.date[!is.na(contrib.date)] <-
+        paste(currentYear, strftime(contrib.date[!is.na(contrib.date)], "%m-%d"), sep='-')
       contrib.year <- currentYear
     })
     return(dataSet)
